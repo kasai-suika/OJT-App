@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">DivingLog</string>
+    <string name="text_number">No.</string>
+    <string name="diving_number">1</string>
+    <string name="diving_place">大瀬崎</string>
+    <string name="text_close_left">（</string>
+    <string name="diving_point">内湾</string>
+    <string name="text_close_right">）</string>
+    <string name="place">場所</string>
+    <string name="hint1">地名を入力してください</string>
+    <string name="place_name">地名</string>
+    <string name="place_point">ポイント</string>
+    <string name="date">日付</string>
+    <string name="time">時間</string>
+    <string name="start">開始</string>
+    <string name="end">終了</string>
+    <string name="depth">水深 ( m )</string>
+    <string name="max">最大</string>
+    <string name="ave">平均</string>
+    <string name="bar">残圧 ( bar )</string>
+    <string name="condition">コンディション</string>
+    <string name="temp">気温(℃)</string>
+    <string name="weather">天気</string>
+    <string name="temp_water">水温(℃)</string>
+    <string name="visibility">透明度(m)</string>
+    <string name="buddy">バディ</string>
+    <string name="navi">ナビ</string>
+    <string name="member">メンバー</string>
+    <string name="memo">メモ</string>
+    <string name="picture">写真</string>
+    <string name="hint">input</string>
+    <string name="button_make_task">作成</string>
+    <string name="dive_number">本数</string>
+    <string name="dive_time">潜水時間</string>
+    <string name="honme">本目</string>
+    <string name="button_edit_task">編集</string>
+</resources>

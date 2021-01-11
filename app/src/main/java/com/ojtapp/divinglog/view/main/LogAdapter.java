@@ -1,17 +1,20 @@
 package com.ojtapp.divinglog.view.main;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
 import com.ojtapp.divinglog.R;
 import com.ojtapp.divinglog.appif.DivingLog;
+import com.ojtapp.divinglog.view.detail.LogActivity;
 
 import java.util.List;
 
@@ -26,9 +29,9 @@ public class LogAdapter extends ArrayAdapter<DivingLog> {
      */
     LogAdapter(@NonNull Context context, int resource, List<DivingLog> items) {
         super(context, resource, items);
+        this.context = context;
         this.resource = resource;
         this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.context = context;
     }
 
     @Override
@@ -43,26 +46,37 @@ public class LogAdapter extends ArrayAdapter<DivingLog> {
         }
 
         // DivingLogを取得
-        final DivingLog log = getItem(position);
-        if (log != null) {
+        final DivingLog divingLog = getItem(position);
+        if (divingLog != null) {
             // 本数
             TextView divingNumber = view.findViewById(R.id.list_diving_number);
-            divingNumber.setText(log.getDivingNumber());
+            divingNumber.setText(String.valueOf(divingLog.getDivingNumber()));
 
             // 場所
             TextView place = view.findViewById(R.id.list_place);
-            place.setText(log.getPlace());
+            place.setText(divingLog.getPlace());
 
             // ポイント
             TextView point = view.findViewById(R.id.list_point);
-            point.setText(log.getPoint());
+            point.setText(divingLog.getPoint());
         } else {
-            Log.e(TAG, "log = null");
+            Log.e(TAG, "divingLog = null");
         }
 
         // TODO:リスト内表示の「編集ボタン」を押下
+        ImageButton editButton = view.findViewById(R.id.list_button_edit);
+        editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "編集ボタン押下");
 
-        // TODO:リスト内表示の「削除ボタン」を押下
+                Intent intent = new Intent(context, LogActivity.class);
+                intent.putExtra(LogActivity.MODE_KEY, LogActivity.Mode.EDIT_MOOD.value);
+                intent.putExtra(LogActivity.TABLE_KEY, divingLog);
+                context.startActivity(intent);
+            }
+        });
+
 
         return view;
     }

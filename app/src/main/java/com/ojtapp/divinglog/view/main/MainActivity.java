@@ -10,8 +10,7 @@ import android.view.View;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.ojtapp.divinglog.R;
-import com.ojtapp.divinglog.view.detail.TaskActivity;
-import com.ojtapp.divinglog.view.detail.TaskAddFragment;
+import com.ojtapp.divinglog.view.detail.LogActivity;
 
 public class MainActivity extends AppCompatActivity {
     public static final int PAGE_MAIN = 0;
@@ -34,8 +33,8 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "追加ボタン押下");
 
                 // TaskActivityに「追加」モードの情報を渡す
-                Intent intent = new Intent(MainActivity.this, TaskActivity.class);
-                intent.putExtra(TaskActivity.MODE_KEY, TaskActivity.Mode.ADD_MODE.value);
+                Intent intent = new Intent(MainActivity.this, LogActivity.class);
+                intent.putExtra(LogActivity.MODE_KEY, LogActivity.Mode.ADD_MODE.value);
                 startActivity(intent);
             }
         });

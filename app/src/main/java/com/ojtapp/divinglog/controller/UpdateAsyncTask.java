@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,47 +15,45 @@ import com.ojtapp.divinglog.model.OpenHelper;
 
 import java.lang.ref.WeakReference;
 
-public class RegisterAsyncTask extends AsyncTask<DivingLog, Integer, Boolean> {
+/**
+ * 【DB】データ更新処理クラス
+ */
+public class UpdateAsyncTask extends AsyncTask<DivingLog, Integer, Boolean> {
     /**
      * クラス名
      */
-    private static final String TAG = RegisterAsyncTask.class.getSimpleName();
+    private static final String TAG = UpdateAsyncTask.class.getSimpleName();
     /**
-     * コンテクスト受け取り用
+     * Context受け取り用
      */
+    @NonNull
     private final WeakReference<Context> weakReference;
     /**
-     * コールバック受け取り用
+     * コールバック設定用
      */
-    private RegisterCallback registerCallback;
+    @Nullable
+    private UpdateCallback updateCallback;
 
-    /**
-     * コンストラクタ
-     * {@inheritDoc}
-     */
-    public RegisterAsyncTask(@NonNull Context context){
+    public UpdateAsyncTask(@NonNull Context context) {
         super();
         weakReference = new WeakReference<>(context);
     }
 
     /**
-     * DB保存処理
+     * DB更新処理
      *
-     * {@inheritDoc}
-     * @return 保存成功：true　失敗：false
+     * @param divingLogs　ダイビングログ
+     * @return 更新処理が成功：true
      */
     @Override
     protected Boolean doInBackground(DivingLog... divingLogs) {
-        android.util.Log.d(TAG, "doInBackground");
+        Log.d(TAG, "doInBackground");
 
-        //　非同期での処理
-        // DB作成
+        // データベースを開く
         OpenHelper openHelper = new OpenHelper(weakReference.get());
-
-        // DBを開く
         SQLiteDatabase db = openHelper.getWritableDatabase();
 
-        // カラム名と保存するデータをセット
+        // カラム名と保存するデータを設定
         ContentValues values = new ContentValues();
         values.put(LogConstant.DIVE_NUMBER, divingLogs[0].getDivingNumber());
         values.put(LogConstant.PLACE, divingLogs[0].getPlace());
@@ -76,14 +75,21 @@ public class RegisterAsyncTask extends AsyncTask<DivingLog, Integer, Boolean> {
         values.put(LogConstant.MEMBER_NAVIGATE, divingLogs[0].getMemberNavigate());
         values.put(LogConstant.MEMO, divingLogs[0].getMemo());
 
-        // 保存実行
-        db.insert(LogConstant.TABLE_NAME, null, values);
+        // 更新処理
+        String selection = LogConstant.LOG_ID + " = ?";
+        String[] selectionArgs = {String.valueOf(divingLogs[0].getLogId())};
+
+        db.update(
+                LogConstant.TABLE_NAME,
+                values,
+                selection,
+                selectionArgs);
+
         return true;
     }
 
     @Override
-    protected void onProgressUpdate(Integer... progress){
-        // 進捗状況の表示などの処理
+    protected  void  onProgressUpdate(Integer... progress){
     }
 
     /**
@@ -91,26 +97,26 @@ public class RegisterAsyncTask extends AsyncTask<DivingLog, Integer, Boolean> {
      * {@inheritDoc}
      */
     @Override
-    protected void onPostExecute(Boolean result){
+    protected void onPostExecute(Boolean result) {
         super.onPostExecute(result);
-        if(null != registerCallback){
-            registerCallback.onRegister(result);
+        if (null != updateCallback){
+            updateCallback.onUpdate(result);
         }
     }
 
     /**
      * コールバック処理を設定
      *
-     * @param registerCallback　コールバックする内容
+     * @param updateCallback コールバックする内容
      */
-    public void setOnCallBack(@Nullable RegisterCallback registerCallback){
-        this.registerCallback = registerCallback;
+    public void setUpdateCallback(@Nullable UpdateCallback updateCallback){
+        this.updateCallback = updateCallback;
     }
 
     /**
      * コールバック用インターフェイス
      */
-    public interface RegisterCallback{
-        void onRegister(Boolean result);
+    public interface UpdateCallback {
+        void onUpdate(boolean result);
     }
 }

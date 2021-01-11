@@ -11,8 +11,8 @@ import androidx.fragment.app.Fragment;
 import com.ojtapp.divinglog.R;
 import com.ojtapp.divinglog.appif.DivingLog;
 
-public class TaskActivity extends AppCompatActivity {
-    private static final String TAG = TaskActivity.class.getSimpleName();
+public class LogActivity extends AppCompatActivity {
+    private static final String TAG = LogActivity.class.getSimpleName();
     /**
      * DivingLogオブジェクト受け取り用キー
      */
@@ -48,26 +48,27 @@ public class TaskActivity extends AppCompatActivity {
         setContentView(R.layout.activity_task);
 
         // DivingLogオブジェクトの取得
-        DivingLog divingLog = (DivingLog)intent.getSerializableExtra(TABLE_KEY);
+        DivingLog divingLog = (DivingLog) intent.getSerializableExtra(TABLE_KEY);
         // 画面遷移のモードの取得
         String modeValue = intent.getStringExtra(MODE_KEY);
+        Log.d(TAG, "modeValue="+modeValue);
 
         // フラグメントの選択
         switch (Mode.getEnumName(modeValue)){
             case ADD_MODE:
-                targetFragment = TaskAddFragment.newInstance();
+                targetFragment = LogAddFragment.newInstance();
                 Log.d(TAG, "追加画面に遷移");
                 break;
             case DETAIL_MOOD:
-                targetFragment = TaskDetailFragment.newInstance(divingLog);
+                targetFragment = LogDetailFragment.newInstance(divingLog);
                 Log.d(TAG, "詳細画面に遷移");
                 break;
-//            case EDIT_MOOD:
-//                targetFragment = TaskEditFragment.newInstance(divingLog);
-//                Log.d(TAG, "編集画面に遷移");
-//                break;
+            case EDIT_MOOD:
+                targetFragment = LogEditFragment.newInstance(divingLog);
+                Log.d(TAG, "編集画面に遷移");
+                break;
             default:
-                targetFragment = TaskAddFragment.newInstance();
+                targetFragment = LogAddFragment.newInstance();
                 Log.d(TAG, "追加画面に遷移（default）");
                 break;
         }
@@ -91,7 +92,7 @@ public class TaskActivity extends AppCompatActivity {
          */
         public static Mode getEnumName(String str){
             for(Mode mode : values()){          // 全ての列挙子を順に比較
-                if(mode.value.equals(str)){     // 引数’ｓｔｒ’と文字列が一致した場合
+                if(mode.value.equals(str)){     // 引数’str’と文字列が一致した場合
                     return mode;                // 列挙子を返す
                 }
             }

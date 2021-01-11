@@ -16,9 +16,8 @@ import androidx.fragment.app.Fragment;
 
 import com.ojtapp.divinglog.R;
 import com.ojtapp.divinglog.appif.DivingLog;
-import com.ojtapp.divinglog.controller.DisplayAsyncTask;
-import com.ojtapp.divinglog.view.detail.TaskActivity;
-import com.ojtapp.divinglog.view.detail.TaskDetailFragment;
+import com.ojtapp.divinglog.controller.ReadAsyncTask;
+import com.ojtapp.divinglog.view.detail.LogActivity;
 
 import java.util.List;
 
@@ -29,6 +28,7 @@ public class LogFragment extends Fragment {
     private static final String TAG = LogFragment.class.getSimpleName();
     private ListView listView;
     private LogAdapter logAdapter;
+
     /**
      * フラグメントのインスタンスを作成
      * {@inheritDoc}
@@ -48,44 +48,48 @@ public class LogFragment extends Fragment {
      * {@inheritDoc}
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceStat){
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceStat) {
         return inflater.inflate(R.layout.fragment_log, container, false);
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceStat){
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceStat) {
         super.onViewCreated(view, savedInstanceStat);
         // リスト表示のViewを結び付ける
         listView = view.findViewById(R.id.list_view_log);
-        // データを取得し、画面を更新処理
-        refreshView();
+        Log.d(TAG, "listView = " + listView);
 
         // リスト押下時
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                DivingLog log = (DivingLog)parent.getItemAtPosition(position);
+                Log.d(TAG, "onItemClick");
+                DivingLog divingLog = (DivingLog) parent.getItemAtPosition(position);
 
-                Intent intent = new Intent(getContext(), TaskActivity.class);
-                intent.putExtra(TaskActivity.MODE_KEY, TaskActivity.Mode.DETAIL_MOOD.value);
-                intent.putExtra(TaskActivity.TABLE_KEY, log);
-
+                Intent intent = new Intent(getContext(), LogActivity.class);
+                intent.putExtra(LogActivity.MODE_KEY, LogActivity.Mode.DETAIL_MOOD.value);
+                intent.putExtra(LogActivity.TABLE_KEY, divingLog);
                 startActivity(intent);
             }
         });
+
+        // データを取得し、画面を更新処理
+        refreshView();
     }
 
-    private void refreshView(){
+    private void refreshView() {
+        Log.d(TAG, "refreshView()");
         final Context context = requireContext();
         //-------【DB】データ取得処理-------------
-        DisplayAsyncTask displayAsyncTask = new DisplayAsyncTask(context);
+        ReadAsyncTask displayAsyncTask = new ReadAsyncTask(context);
 
         // コールバック処理
-        displayAsyncTask.setOnCallBack(new DisplayAsyncTask.DisplayCallback() {
+        displayAsyncTask.setOnCallBack(new ReadAsyncTask.DisplayCallback() {
             @Override
             public void onDisplay(List<DivingLog> logList) {
+                Log.d(TAG, "onDisplay");
                 // Adapterの設定
-                LogAdapter logAdapter = new LogAdapter(context, R.layout.list_log_fragment, logList);
+                LogFragment.this.logAdapter = new LogAdapter(context, R.layout.list_log_item, logList);
                 listView.setAdapter(logAdapter);
             }
         });

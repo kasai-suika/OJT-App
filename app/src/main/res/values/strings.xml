@@ -33,5 +33,7 @@
     <string name="dive_number">本数</string>
     <string name="dive_time">潜水時間</string>
     <string name="honme">本目</string>
-    <string name="button_edit_task">編集</string>
+    <string name="edit">編集</string>
+    <string name="delete">削除</string>
+    <string name="update">更新</string>
 </resources>

@@ -16,13 +16,16 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DisplayAsyncTask extends AsyncTask<Integer, Integer, List<DivingLog>> {
+/**
+ * Log情報をDBから取得するクラス
+ */
+public class ReadAsyncTask extends AsyncTask<Integer, Integer, List<DivingLog>> {
     /**
      * クラス名
      */
-    private static final String TAG = DisplayAsyncTask.class.getSimpleName();
+    private static final String TAG = ReadAsyncTask.class.getSimpleName();
     /**
-     * コンテクスト受け取り用
+     * Context受け取り用
      */
     @NonNull
     private final WeakReference<Context> weakReference;
@@ -36,7 +39,7 @@ public class DisplayAsyncTask extends AsyncTask<Integer, Integer, List<DivingLog
      * コンストラクタ
      * {@inheritDoc}
      */
-    public DisplayAsyncTask(@NonNull Context context) {
+    public ReadAsyncTask(@NonNull Context context) {
         super();
         weakReference = new WeakReference<>(context);
     }

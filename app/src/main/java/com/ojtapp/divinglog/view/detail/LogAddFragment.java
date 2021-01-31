@@ -136,17 +136,17 @@ public class LogAddFragment extends Fragment {
         divingLog.setPoint(point.getText().toString());
 
         // 深度（最大）
-        divingLog.setDepthMax(createIntData(depthMax.getText().toString()));
+        divingLog.setDepthMax(getIntData(depthMax.getText().toString()));
 
         // 深度（平均）
-        divingLog.setDepthAve(createIntData(depthAve.getText().toString()));
+        divingLog.setDepthAve(getIntData(depthAve.getText().toString()));
 
         // 残圧（開始時）
-        int airStartInt = createIntData(airStart.getText().toString());
+        int airStartInt = getIntData(airStart.getText().toString());
         divingLog.setAirStart(airStartInt);
 
         // 残圧（終了時）
-        int airEndInt = createIntData(airEnd.getText().toString());
+        int airEndInt = getIntData(airEnd.getText().toString());
         divingLog.setAirEnd(airEndInt);
 
         // 使用した空気
@@ -161,13 +161,13 @@ public class LogAddFragment extends Fragment {
         divingLog.setWeather(weather.getText().toString());
 
         // 気温
-        divingLog.setTemp(createIntData(temp.getText().toString()));
+        divingLog.setTemp(getIntData(temp.getText().toString()));
 
         // 水温
-        divingLog.setTempWater(createIntData(tempWater.getText().toString()));
+        divingLog.setTempWater(getIntData(tempWater.getText().toString()));
 
         // 透明度
-        divingLog.setVisibility(createIntData(visibility.getText().toString()));
+        divingLog.setVisibility(getIntData(visibility.getText().toString()));
 
         // メンバー
         divingLog.setMember(member.getText().toString());
@@ -213,7 +213,7 @@ public class LogAddFragment extends Fragment {
         divingLog.setTimeDive(timeFormat.format(calendar.getTime()));
     }
 
-    private int createIntData(String strData) {
+    public static int getIntData(String strData) {
         if (0 == strData.length()) {
             return NO_DATA;
         } else {

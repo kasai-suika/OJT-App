@@ -172,34 +172,38 @@ public class LogEditFragment extends Fragment {
                 divingLog.setPoint(point.getText().toString());
 
                 // 深度（最大）
-                divingLog.setDepthMax(Integer.parseInt(depthMax.getText().toString()));
+                divingLog.setDepthMax(LogAddFragment.getIntData(depthMax.getText().toString()));
 
                 // 深度（平均）
-                divingLog.setDepthAve(Integer.parseInt(depthAve.getText().toString()));
+                divingLog.setDepthAve(LogAddFragment.getIntData(depthAve.getText().toString()));
 
                 // 残圧（開始時）
-                int airStartInt = Integer.parseInt(airStart.getText().toString());
+                int airStartInt = LogAddFragment.getIntData(airStart.getText().toString());
                 divingLog.setAirStart(airStartInt);
 
                 // 残圧（終了時）
-                int airEndInt = Integer.parseInt(airEnd.getText().toString());
+                int airEndInt = LogAddFragment.getIntData(airEnd.getText().toString());
                 divingLog.setAirEnd(airEndInt);
 
                 // 使用した空気
-                int airDive = airStartInt - airEndInt;
-                divingLog.setAirDive(airDive);
+                if ((LogAddFragment.NO_DATA == airStartInt) || (LogAddFragment.NO_DATA == airEndInt)) {
+                    divingLog.setAirDive(LogAddFragment.NO_DATA);
+                } else {
+                    int airDive = airStartInt - airEndInt;
+                    divingLog.setAirDive(airDive);
+                }
 
                 // 天気
                 divingLog.setWeather(weather.getText().toString());
 
                 // 気温
-                divingLog.setTemp(Integer.parseInt(temp.getText().toString()));
+                divingLog.setTemp(LogAddFragment.getIntData(temp.getText().toString()));
 
                 // 水温
-                divingLog.setTempWater(Integer.parseInt(tempWater.getText().toString()));
+                divingLog.setTempWater(LogAddFragment.getIntData(tempWater.getText().toString()));
 
                 // 透明度
-                divingLog.setVisibility(Integer.parseInt(visibility.getText().toString()));
+                divingLog.setVisibility(LogAddFragment.getIntData(visibility.getText().toString()));
 
                 // メンバー
                 divingLog.setMember(member.getText().toString());

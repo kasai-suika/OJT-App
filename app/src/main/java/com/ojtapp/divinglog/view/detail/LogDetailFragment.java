@@ -73,18 +73,18 @@ public class LogDetailFragment extends Fragment {
 
         // 値をセット
         if (divingLog != null) {
-            diveNumber.setText(divingLog.getDivingNumber());
+            diveNumber.setText(String.valueOf(divingLog.getDivingNumber()));
             place.setText(divingLog.getPlace());
             point.setText(divingLog.getPoint());
             date.setText(divingLog.getDate());
             time.setText(divingLog.getTimeDive());
-            depthMax.setText(divingLog.getDepthMax());
-            depthAve.setText(divingLog.getDepthAve());
-            air.setText(divingLog.getAirDive());
+            depthMax.setText(createStringData(divingLog.getDepthMax()));
+            depthAve.setText(createStringData(divingLog.getDepthAve()));
+            air.setText(createStringData(divingLog.getAirDive()));
             weather.setText(divingLog.getWeather());
-            temp.setText(divingLog.getTemp());
-            tempWater.setText(divingLog.getTempWater());
-            visibility.setText(divingLog.getVisibility());
+            temp.setText(createStringData(divingLog.getTemp()));
+            tempWater.setText(createStringData(divingLog.getTempWater()));
+            visibility.setText(createStringData(divingLog.getVisibility()));
             member.setText(divingLog.getMember());
             navi.setText(divingLog.getMemberNavigate());
             memo.setText(divingLog.getMemo());
@@ -114,5 +114,13 @@ public class LogDetailFragment extends Fragment {
                 deleteDialogFragment.show(fragmentManager, null);
             }
         });
+    }
+
+    public static String createStringData(int intData) {
+        if (LogAddFragment.NO_DATA == intData) {
+            return "";
+        } else {
+            return String.valueOf(intData);
+        }
     }
 }

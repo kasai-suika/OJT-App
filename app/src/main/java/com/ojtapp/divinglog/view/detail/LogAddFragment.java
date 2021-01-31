@@ -10,14 +10,15 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TimePicker;
-import com.ojtapp.divinglog.R;
-import com.ojtapp.divinglog.appif.DivingLog;
-import com.ojtapp.divinglog.controller.WriteAsyncTask;
-import com.ojtapp.divinglog.view.main.MainActivity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.ojtapp.divinglog.R;
+import com.ojtapp.divinglog.appif.DivingLog;
+import com.ojtapp.divinglog.controller.WriteAsyncTask;
+import com.ojtapp.divinglog.view.main.MainActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -25,7 +26,9 @@ import java.util.Locale;
 
 public class LogAddFragment extends Fragment {
     private static final String TAG = LogActivity.class.getSimpleName();
+    public static final int NO_DATA = -1;
 
+    private Button makeTaskButton;
     private EditText diveNumber;
     private EditText place;
     private EditText point;
@@ -43,9 +46,6 @@ public class LogAddFragment extends Fragment {
     private DatePicker date;
     private TimePicker timeStart;
     private TimePicker timeEnd;
-
-    public LogAddFragment() {
-    }
 
     public static Fragment newInstance() {
         android.util.Log.d(TAG, "newInstance()");
@@ -70,115 +70,16 @@ public class LogAddFragment extends Fragment {
         android.util.Log.d(TAG, "onViewCreated");
 
         // 変数とレイアウトを紐づけ
-        Button makeTaskButton = view.findViewById(R.id.button_make_task);
-        diveNumber = view.findViewById(R.id.add_dive_number);
-        place = view.findViewById(R.id.add_place);
-        point = view.findViewById(R.id.add_point);
-        depthMax = view.findViewById(R.id.add_depth_max);
-        depthAve = view.findViewById(R.id.add_depth_ave);
-        airStart = view.findViewById(R.id.add_air_start);
-        airEnd = view.findViewById(R.id.add_air_end);
-        weather = view.findViewById(R.id.add_weather);
-        temp = view.findViewById(R.id.add_temp);
-        tempWater = view.findViewById(R.id.add_temp_water);
-        visibility = view.findViewById(R.id.add_visibility);
-        member = view.findViewById(R.id.add_member);
-        memberNavigate = view.findViewById(R.id.add_navi);
-        memo = view.findViewById(R.id.add_memo);
-        date = view.findViewById(R.id.add_date);
-        timeStart = view.findViewById(R.id.add_time_start);
-        timeEnd = view.findViewById(R.id.add_time_end);
+        linkVariable(view);
 
         makeTaskButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                android.util.Log.d(TAG, "onClick");
+                Log.d(TAG, "onClick");
 
                 //---------DivingLogクラスにセット------------
                 DivingLog divingLog = new DivingLog();
-
-                // 本数
-                divingLog.setDiveNumber(Integer.parseInt(diveNumber.getText().toString()));
-
-                // 場所
-                divingLog.setPlace(place.getText().toString());
-
-                // ポイント
-                divingLog.setPoint(point.getText().toString());
-
-                // 深度（最大）
-                divingLog.setDepthMax(Integer.parseInt(depthMax.getText().toString()));
-
-                // 深度（平均）
-                divingLog.setDepthAve(Integer.parseInt(depthAve.getText().toString()));
-
-                // 残圧（開始時）
-                int airStartInt = Integer.parseInt(airStart.getText().toString());
-                divingLog.setAirStart(airStartInt);
-
-                // 残圧（終了時）
-                int airEndInt = Integer.parseInt(airEnd.getText().toString());
-                divingLog.setAirEnd(airEndInt);
-
-                // 使用した空気
-                int airDive = airStartInt - airEndInt;
-                divingLog.setAirDive(airDive);
-
-                // 天気
-                divingLog.setWeather(weather.getText().toString());
-
-                // 気温
-                divingLog.setTemp(Integer.parseInt(temp.getText().toString()));
-
-                // 水温
-                divingLog.setTempWater(Integer.parseInt(tempWater.getText().toString()));
-
-                // 透明度
-                divingLog.setVisibility(Integer.parseInt(visibility.getText().toString()));
-
-                // メンバー
-                divingLog.setMember(member.getText().toString());
-
-                // ナビ
-                divingLog.setMemberNavigate(memberNavigate.getText().toString());
-
-                // メモ
-                divingLog.setMemo(memo.getText().toString());
-
-                // 日付
-                int day = date.getDayOfMonth();
-                int month = date.getMonth();
-                int year = date.getYear();
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(year, month, day); // 日付をカレンダークラスにセット
-                SimpleDateFormat dateFormat = new SimpleDateFormat(LogActivity.FORMAT_DATE, Locale.JAPAN);
-                divingLog.setDate(dateFormat.format(calendar.getTime()));   // フォーマットを指定してDivingLogクラスにセット
-
-                // 開始時間
-                int hourStart = timeStart.getHour();
-                int minuteStart = timeStart.getMinute();
-                calendar.set(hourStart, minuteStart);
-                SimpleDateFormat timeFormat = new SimpleDateFormat(LogActivity.FORMAT_TIME, Locale.JAPAN);
-                divingLog.setTimeStart(timeFormat.format(calendar.getTime()));
-
-                // 終了時間
-                int hourEnd = timeEnd.getHour();
-                int minuteEnd = timeEnd.getMinute();
-                calendar.set(hourEnd, minuteEnd);
-                divingLog.setTimeEnd(timeFormat.format(calendar.getTime()));
-
-                // 潜水時間
-                int hour = hourEnd - hourStart;
-                int minute;
-                if (minuteEnd < minuteStart) {
-                    minute = minuteEnd + 60 - minuteStart;
-                    hour = hour - 1;
-                } else {
-                    minute = minuteEnd - minuteStart;
-                }
-                calendar.set(hour, minute);
-                divingLog.setTimeDive(timeFormat.format(calendar.getTime()));
-
+                setDateToDivingLog(divingLog);
 
                 // -----【DB】保存処理--------------
                 WriteAsyncTask registerAsyncTask = new WriteAsyncTask(requireContext());
@@ -201,5 +102,122 @@ public class LogAddFragment extends Fragment {
                 registerAsyncTask.execute(divingLog);
             }
         });
+    }
+
+    private void linkVariable(View view) {
+        makeTaskButton = view.findViewById(R.id.button_make_task);
+        diveNumber = view.findViewById(R.id.add_dive_number);
+        place = view.findViewById(R.id.add_place);
+        point = view.findViewById(R.id.add_point);
+        depthMax = view.findViewById(R.id.add_depth_max);
+        depthAve = view.findViewById(R.id.add_depth_ave);
+        airStart = view.findViewById(R.id.add_air_start);
+        airEnd = view.findViewById(R.id.add_air_end);
+        weather = view.findViewById(R.id.add_weather);
+        temp = view.findViewById(R.id.add_temp);
+        tempWater = view.findViewById(R.id.add_temp_water);
+        visibility = view.findViewById(R.id.add_visibility);
+        member = view.findViewById(R.id.add_member);
+        memberNavigate = view.findViewById(R.id.add_navi);
+        memo = view.findViewById(R.id.add_memo);
+        date = view.findViewById(R.id.add_date);
+        timeStart = view.findViewById(R.id.add_time_start);
+        timeEnd = view.findViewById(R.id.add_time_end);
+    }
+
+    public void setDateToDivingLog(DivingLog divingLog) {
+        // 本数
+        divingLog.setDiveNumber(Integer.parseInt(diveNumber.getText().toString()));
+
+        // 場所
+        divingLog.setPlace(place.getText().toString());
+
+        // ポイント
+        divingLog.setPoint(point.getText().toString());
+
+        // 深度（最大）
+        divingLog.setDepthMax(createIntData(depthMax.getText().toString()));
+
+        // 深度（平均）
+        divingLog.setDepthAve(createIntData(depthAve.getText().toString()));
+
+        // 残圧（開始時）
+        int airStartInt = createIntData(airStart.getText().toString());
+        divingLog.setAirStart(airStartInt);
+
+        // 残圧（終了時）
+        int airEndInt = createIntData(airEnd.getText().toString());
+        divingLog.setAirEnd(airEndInt);
+
+        // 使用した空気
+        if ((NO_DATA == airStartInt) || (NO_DATA == airEndInt)) {
+            divingLog.setAirDive(NO_DATA);
+        } else {
+            int airDive = airStartInt - airEndInt;
+            divingLog.setAirDive(airDive);
+        }
+
+        // 天気
+        divingLog.setWeather(weather.getText().toString());
+
+        // 気温
+        divingLog.setTemp(createIntData(temp.getText().toString()));
+
+        // 水温
+        divingLog.setTempWater(createIntData(tempWater.getText().toString()));
+
+        // 透明度
+        divingLog.setVisibility(createIntData(visibility.getText().toString()));
+
+        // メンバー
+        divingLog.setMember(member.getText().toString());
+
+        // ナビ
+        divingLog.setMemberNavigate(memberNavigate.getText().toString());
+
+        // メモ
+        divingLog.setMemo(memo.getText().toString());
+
+        // 日付
+        int day = date.getDayOfMonth();
+        int month = date.getMonth();
+        int year = date.getYear();
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, day); // 日付をカレンダークラスにセット
+        SimpleDateFormat dateFormat = new SimpleDateFormat(LogActivity.FORMAT_DATE, Locale.JAPAN);
+        divingLog.setDate(dateFormat.format(calendar.getTime()));   // フォーマットを指定してDivingLogクラスにセット
+
+        // 開始時間
+        int hourStart = timeStart.getHour();
+        int minuteStart = timeStart.getMinute();
+        calendar.set(hourStart, minuteStart);
+        SimpleDateFormat timeFormat = new SimpleDateFormat(LogActivity.FORMAT_TIME, Locale.JAPAN);
+        divingLog.setTimeStart(timeFormat.format(calendar.getTime()));
+
+        // 終了時間
+        int hourEnd = timeEnd.getHour();
+        int minuteEnd = timeEnd.getMinute();
+        calendar.set(hourEnd, minuteEnd);
+        divingLog.setTimeEnd(timeFormat.format(calendar.getTime()));
+
+        // 潜水時間
+        int hour = hourEnd - hourStart;
+        int minute;
+        if (minuteEnd < minuteStart) {
+            minute = minuteEnd + 60 - minuteStart;
+            hour = hour - 1;
+        } else {
+            minute = minuteEnd - minuteStart;
+        }
+        calendar.set(hour, minute);
+        divingLog.setTimeDive(timeFormat.format(calendar.getTime()));
+    }
+
+    private int createIntData(String strData) {
+        if (0 == strData.length()) {
+            return NO_DATA;
+        } else {
+            return Integer.parseInt(strData);
+        }
     }
 }

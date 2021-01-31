@@ -7,14 +7,14 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.ojtapp.divinglog.LogConstant;
 
 public class OpenHelper extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
     private static final String DATABASE_NAME = "DivingLog.db";
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + LogConstant.TABLE_NAME + "(" +
                     LogConstant.LOG_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     LogConstant.DIVE_NUMBER + " INT, " +
-                    LogConstant.PLACE + " TEXT, " +
-                    LogConstant.POINT + " TEXT, " +
+                    LogConstant.PLACE + " TEXT NOT NULL, " +
+                    LogConstant.POINT + " TEXT NOT NULL, " +
                     LogConstant.DATE + " TEXT, " +
                     LogConstant.TIME_START + " TEXT, " +
                     LogConstant.TIME_END + " TEXT, " +

@@ -93,37 +93,38 @@ public class LogEditFragment extends Fragment {
         final DivingLog divingLog = (DivingLog) args.getSerializable(LogActivity.TABLE_KEY);
 
         // 変数とレイアウトのViewを紐づける
-        diveNumber = view.findViewById(R.id.add_dive_number);
-        place = view.findViewById(R.id.add_place);
-        point = view.findViewById(R.id.add_point);
-        depthMax = view.findViewById(R.id.add_depth_max);
-        depthAve = view.findViewById(R.id.add_depth_ave);
-        airStart = view.findViewById(R.id.add_air_start);
-        airEnd = view.findViewById(R.id.add_air_end);
-        weather = view.findViewById(R.id.add_weather);
-        temp = view.findViewById(R.id.add_temp);
-        tempWater = view.findViewById(R.id.add_temp_water);
-        visibility = view.findViewById(R.id.add_visibility);
-        member = view.findViewById(R.id.add_member);
-        memberNavigate = view.findViewById(R.id.add_navi);
-        memo = view.findViewById(R.id.add_memo);
-        date = view.findViewById(R.id.add_date);
-        timeStart = view.findViewById(R.id.add_time_start);
-        timeEnd = view.findViewById(R.id.add_time_end);
+        diveNumber = view.findViewById(R.id.edit_dive_number);
+        place = view.findViewById(R.id.edit_place);
+        point = view.findViewById(R.id.edit_point);
+        depthMax = view.findViewById(R.id.edit_depth_max);
+        depthAve = view.findViewById(R.id.edit_depth_ave);
+        airStart = view.findViewById(R.id.edit_air_start);
+        airEnd = view.findViewById(R.id.edit_air_end);
+        weather = view.findViewById(R.id.edit_weather);
+        temp = view.findViewById(R.id.edit_temp);
+        tempWater = view.findViewById(R.id.edit_temp_water);
+        visibility = view.findViewById(R.id.edit_visibility);
+        member = view.findViewById(R.id.edit_member);
+        memberNavigate = view.findViewById(R.id.edit_navi);
+        memo = view.findViewById(R.id.edit_memo);
+        date = view.findViewById(R.id.edit_date);
+        timeStart = view.findViewById(R.id.edit_time_start);
+        timeEnd = view.findViewById(R.id.edit_time_end);
 
         // 初期データのセット
         if (null != divingLog) {
-            diveNumber.setText(divingLog.getDivingNumber());
+            Log.d(TAG, "divN =" + String.valueOf(divingLog.getDivingNumber()));
+            diveNumber.setText(String.valueOf(divingLog.getDivingNumber()));
             place.setText(divingLog.getPlace());
             point.setText(divingLog.getPoint());
-            depthMax.setText(divingLog.getDepthMax());
-            depthAve.setText(divingLog.getDepthAve());
-            airStart.setText(divingLog.getAirStart());
-            airEnd.setText(divingLog.getAirEnd());
+            depthMax.setText(LogDetailFragment.createStringData(divingLog.getDepthMax()));
+            depthAve.setText(LogDetailFragment.createStringData(divingLog.getDepthAve()));
+            airStart.setText(LogDetailFragment.createStringData(divingLog.getAirStart()));
+            airEnd.setText(LogDetailFragment.createStringData(divingLog.getAirEnd()));
             weather.setText(divingLog.getWeather());
-            temp.setText(divingLog.getTemp());
-            tempWater.setText(divingLog.getTempWater());
-            visibility.setText(divingLog.getVisibility());
+            temp.setText(LogDetailFragment.createStringData(divingLog.getTemp()));
+            tempWater.setText(LogDetailFragment.createStringData(divingLog.getTempWater()));
+            visibility.setText(LogDetailFragment.createStringData(divingLog.getVisibility()));
             member.setText(divingLog.getMember());
             memberNavigate.setText(divingLog.getMemberNavigate());
             memo.setText(divingLog.getMemo());

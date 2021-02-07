@@ -1,6 +1,10 @@
 package com.ojtapp.divinglog.view.detail;
 
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Dialog;
+import android.app.Service;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -42,16 +46,22 @@ public class DeleteDialogFragment extends DialogFragment {
      */
     private static final String BUTTON_NEGATIVE = "いいえ";
 
+    private final Context context;
+
+    public DeleteDialogFragment(Context context) {
+        this.context = context;
+    }
+
     /**
      * インスタンスの作成
      *
      * @param divingLog 削除処理をするログ
      * @return フラグメント
      */
-    public static DeleteDialogFragment newInstance(@NonNull DivingLog divingLog) {
+    public static DeleteDialogFragment newInstance(@NonNull DivingLog divingLog, Context context) {
         Log.d(TAG, "newInstance()");
 
-        DeleteDialogFragment fragment = new DeleteDialogFragment();
+        DeleteDialogFragment fragment = new DeleteDialogFragment(context);
 
         Bundle args = new Bundle();
         args.putSerializable(LogActivity.TABLE_KEY, divingLog);
@@ -63,7 +73,7 @@ public class DeleteDialogFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        return new AlertDialog.Builder(requireContext())
+        return new AlertDialog.Builder(this.context)
                 .setTitle(TITLE_DELETE_DIALOG)
                 .setMessage(MESSAGE_DELETE_DIALOG)
                 .setPositiveButton(BUTTON_POSITIVE, new DialogInterface.OnClickListener() {
@@ -80,12 +90,16 @@ public class DeleteDialogFragment extends DialogFragment {
      * 削除ダイアログにて「はい」を押下時に、そのログを削除する
      */
     private void onClickPositiveButton() {
-        DeleteAsyncTask deleteAsyncTask = new DeleteAsyncTask(requireContext());
+        DeleteAsyncTask deleteAsyncTask = new DeleteAsyncTask(this.context);
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Service.ACTIVITY_SERVICE);
+        String className = activityManager.getRunningTasks(1).get(0).topActivity.getClassName();
+        Log.d(TAG, "className:"+ className);
 
         deleteAsyncTask.setDeleteCallback(new DeleteAsyncTask.DeleteCallback() {
             @Override
             public void onDeleted(boolean result) {
-                Intent intent = new Intent(getContext(), MainActivity.class);
+                Log.d(TAG, "context = " + DeleteDialogFragment.this.context);
+                Intent intent = new Intent(DeleteDialogFragment.this.context, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             }

@@ -262,8 +262,9 @@ public class LogEditFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "削除ボタン押下");
-                DeleteDialogFragment deleteDialogFragment = DeleteDialogFragment.newInstance(divingLog);
-                deleteDialogFragment.show(getFragmentManager(), null);
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                DeleteDialogFragment deleteDialogFragment = DeleteDialogFragment.newInstance(divingLog, getContext());
+                deleteDialogFragment.show(fragmentManager, null);
             }
         });
     }

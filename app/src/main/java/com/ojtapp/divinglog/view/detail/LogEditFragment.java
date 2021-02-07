@@ -139,30 +139,19 @@ public class LogEditFragment extends Fragment {
             timeStart.setHour(Integer.parseInt(startTime[0]));
             timeStart.setMinute(Integer.parseInt(startTime[1]));
 
-            String[] endTime = divingLog.getTimeStart().split(SEPARATE_TIME, 0);
+            String[] endTime = divingLog.getTimeEnd().split(SEPARATE_TIME, 0);
             timeEnd.setHour(Integer.parseInt(endTime[0]));
             timeEnd.setMinute(Integer.parseInt(endTime[1]));
         } else {
             Log.e(TAG, "divingLog = null");
         }
 
-        // 削除ボタン押下時の設定
-        Button deleteButton = view.findViewById(R.id.edit_button_delete);
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "削除ボタン押下");
-                FragmentManager fragmentManager = getFragmentManager();
-                DeleteDialogFragment deleteDialogFragment = DeleteDialogFragment.newInstance(divingLog);
-                deleteDialogFragment.show(fragmentManager, null);
-            }
-        });
-
         Button saveButton = view.findViewById(R.id.edit_button_update);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // 本数 TODO:LogAddFragmentと同じ処理。簡略化出来るのでは。
+                assert divingLog != null;
                 divingLog.setDiveNumber(Integer.parseInt(diveNumber.getText().toString()));
 
                 // 場所
@@ -226,18 +215,20 @@ public class LogEditFragment extends Fragment {
                 // 開始時間
                 int hourStart = timeStart.getHour();
                 int minuteStart = timeStart.getMinute();
-                calendar.set(hourStart, minuteStart);
+                calendar.set(Calendar.HOUR, hourStart);
+                calendar.set(Calendar.MINUTE, minuteStart);
                 SimpleDateFormat timeFormat = new SimpleDateFormat(LogActivity.FORMAT_TIME, Locale.JAPAN);
                 divingLog.setTimeStart(timeFormat.format(calendar.getTime()));
 
                 // 終了時間
                 int hourEnd = timeEnd.getHour();
                 int minuteEnd = timeEnd.getMinute();
-                calendar.set(hourEnd, minuteEnd);
+                calendar.set(Calendar.HOUR, hourEnd);
+                calendar.set(Calendar.MINUTE, minuteEnd);
                 divingLog.setTimeEnd(timeFormat.format(calendar.getTime()));
 
                 // 潜水時間
-                int hour = hourEnd - hourStart;
+                int hour = (hourEnd - hourStart);
                 int minute;
                 if (minuteEnd < minuteStart) {
                     minute = minuteEnd + 60 - minuteStart;
@@ -245,8 +236,9 @@ public class LogEditFragment extends Fragment {
                 } else {
                     minute = minuteEnd - minuteStart;
                 }
-                calendar.set(hour, minute);
-                divingLog.setTimeDive(timeFormat.format(calendar.getTime()));
+                calendar.set(Calendar.HOUR, hour);
+                calendar.set(Calendar.MINUTE, minute);
+                divingLog.setTimeDive(timeFormat.format(calendar.getTimeInMillis()));
 
                 // -----【DB】更新処理--------------
                 UpdateAsyncTask updateAsyncTask = new UpdateAsyncTask(requireContext());
@@ -260,8 +252,18 @@ public class LogEditFragment extends Fragment {
                         startActivity(intent);
                     }
                 });
-
                 updateAsyncTask.execute(divingLog);
+            }
+        });
+
+        // 削除ボタン押下時の設定
+        Button deleteButton = view.findViewById(R.id.edit_button_delete);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "削除ボタン押下");
+                DeleteDialogFragment deleteDialogFragment = DeleteDialogFragment.newInstance(divingLog);
+                deleteDialogFragment.show(getFragmentManager(), null);
             }
         });
     }

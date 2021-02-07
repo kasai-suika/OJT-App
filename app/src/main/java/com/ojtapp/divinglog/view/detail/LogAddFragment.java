@@ -190,18 +190,22 @@ public class LogAddFragment extends Fragment {
         // 開始時間
         int hourStart = timeStart.getHour();
         int minuteStart = timeStart.getMinute();
-        calendar.set(hourStart, minuteStart);
+        calendar.set(Calendar.HOUR, hourStart);
+        calendar.set(Calendar.MINUTE, minuteStart);
         SimpleDateFormat timeFormat = new SimpleDateFormat(LogActivity.FORMAT_TIME, Locale.JAPAN);
         divingLog.setTimeStart(timeFormat.format(calendar.getTime()));
+        Log.d(TAG, "start =" + timeFormat.format(calendar.getTime()));
 
         // 終了時間
         int hourEnd = timeEnd.getHour();
         int minuteEnd = timeEnd.getMinute();
-        calendar.set(hourEnd, minuteEnd);
+        calendar.set(Calendar.HOUR, hourEnd);
+        calendar.set(Calendar.MINUTE, minuteEnd);
         divingLog.setTimeEnd(timeFormat.format(calendar.getTime()));
+        Log.d(TAG, "end =" + timeFormat.format(calendar.getTime()));
 
         // 潜水時間
-        int hour = hourEnd - hourStart;
+        int hour = (hourEnd - hourStart);
         int minute;
         if (minuteEnd < minuteStart) {
             minute = minuteEnd + 60 - minuteStart;
@@ -209,8 +213,9 @@ public class LogAddFragment extends Fragment {
         } else {
             minute = minuteEnd - minuteStart;
         }
-        calendar.set(hour, minute);
-        divingLog.setTimeDive(timeFormat.format(calendar.getTime()));
+        calendar.set(Calendar.HOUR, hour);
+        calendar.set(Calendar.MINUTE, minute);
+        divingLog.setTimeDive(timeFormat.format(calendar.getTimeInMillis()));
     }
 
     public static int getIntData(String strData) {

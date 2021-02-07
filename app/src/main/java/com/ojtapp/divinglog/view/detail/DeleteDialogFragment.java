@@ -63,7 +63,7 @@ public class DeleteDialogFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        return new AlertDialog.Builder(getContext())
+        return new AlertDialog.Builder(requireContext())
                 .setTitle(TITLE_DELETE_DIALOG)
                 .setMessage(MESSAGE_DELETE_DIALOG)
                 .setPositiveButton(BUTTON_POSITIVE, new DialogInterface.OnClickListener() {
@@ -103,5 +103,4 @@ public class DeleteDialogFragment extends DialogFragment {
         // 非同期処理を実行
         deleteAsyncTask.execute(divingLog);
     }
-
 }

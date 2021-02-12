@@ -7,14 +7,14 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.ojtapp.divinglog.LogConstant;
 
 public class OpenHelper extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
     private static final String DATABASE_NAME = "DivingLog.db";
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + LogConstant.TABLE_NAME + "(" +
                     LogConstant.LOG_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     LogConstant.DIVE_NUMBER + " INT, " +
-                    LogConstant.PLACE + " TEXT NOT NULL, " +
-                    LogConstant.POINT + " TEXT NOT NULL, " +
+                    LogConstant.PLACE + " TEXT , " +
+                    LogConstant.POINT + " TEXT , " +
                     LogConstant.DATE + " TEXT, " +
                     LogConstant.TIME_START + " TEXT, " +
                     LogConstant.TIME_END + " TEXT, " +
@@ -33,27 +33,27 @@ public class OpenHelper extends SQLiteOpenHelper {
                     LogConstant.MEMO + " TEXT" + ")";
 
 
-        private static final String SQL_DELETE_ENTRIES =
-                "DROP TABLE IF EXISTS " + LogConstant.TABLE_NAME;
+    private static final String SQL_DELETE_ENTRIES =
+            "DROP TABLE IF EXISTS " + LogConstant.TABLE_NAME;
 
-        public  OpenHelper(Context context) {
-            super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        }
+    public OpenHelper(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
 
-        // データベースの作成
-        public void onCreate(SQLiteDatabase db) {
-            db.execSQL(SQL_CREATE_ENTRIES);
-        }
+    // データベースの作成
+    public void onCreate(SQLiteDatabase db) {
+        db.execSQL(SQL_CREATE_ENTRIES);
+    }
 
-        // データベースの更新
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            db.execSQL(SQL_DELETE_ENTRIES);
-            onCreate(db);
-        }
+    // データベースの更新
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL(SQL_DELETE_ENTRIES);
+        onCreate(db);
+    }
 
-        public void onDowngrade (SQLiteDatabase db, int oldVersion, int newVersion) {
-            onUpgrade(db, oldVersion, newVersion);
-        }
+    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        onUpgrade(db, oldVersion, newVersion);
+    }
 
 }
 

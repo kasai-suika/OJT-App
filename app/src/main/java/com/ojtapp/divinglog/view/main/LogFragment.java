@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import com.ojtapp.divinglog.R;
 import com.ojtapp.divinglog.appif.DivingLog;
-import com.ojtapp.divinglog.controller.ReadAsyncTask;
+import com.ojtapp.divinglog.controller.DisplayAsyncTask;
 import com.ojtapp.divinglog.view.detail.LogActivity;
 
 import java.util.List;
@@ -81,10 +81,10 @@ public class LogFragment extends Fragment {
         Log.d(TAG, "refreshView()");
         final Context context = requireContext();
         //-------【DB】データ取得処理-------------
-        ReadAsyncTask displayAsyncTask = new ReadAsyncTask(context);
+        DisplayAsyncTask displayAsyncTask = new DisplayAsyncTask(context);
 
         // コールバック処理
-        displayAsyncTask.setOnCallBack(new ReadAsyncTask.DisplayCallback() {
+        displayAsyncTask.setOnCallBack(new DisplayAsyncTask.DisplayCallback() {
             @Override
             public void onDisplay(List<DivingLog> logList) {
                 Log.d(TAG, "onDisplay");

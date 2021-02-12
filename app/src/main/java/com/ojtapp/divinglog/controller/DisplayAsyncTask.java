@@ -19,11 +19,11 @@ import java.util.List;
 /**
  * Log情報をDBから取得するクラス
  */
-public class ReadAsyncTask extends AsyncTask<Integer, Integer, List<DivingLog>> {
+public class DisplayAsyncTask extends AsyncTask<Integer, Integer, List<DivingLog>> {
     /**
      * クラス名
      */
-    private static final String TAG = ReadAsyncTask.class.getSimpleName();
+    private static final String TAG = DisplayAsyncTask.class.getSimpleName();
     /**
      * Context受け取り用
      */
@@ -39,7 +39,7 @@ public class ReadAsyncTask extends AsyncTask<Integer, Integer, List<DivingLog>> 
      * コンストラクタ
      * {@inheritDoc}
      */
-    public ReadAsyncTask(@NonNull Context context) {
+    public DisplayAsyncTask(@NonNull Context context) {
         super();
         weakReference = new WeakReference<>(context);
     }

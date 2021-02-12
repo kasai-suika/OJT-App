@@ -17,11 +17,11 @@ import java.lang.ref.WeakReference;
 /**
  * Log情報をDBに保存するクラス
  */
-public class WriteAsyncTask extends AsyncTask<DivingLog, Integer, Boolean> {
+public class RegisterAsyncTask extends AsyncTask<DivingLog, Integer, Boolean> {
     /**
      * クラス名
      */
-    private static final String TAG = WriteAsyncTask.class.getSimpleName();
+    private static final String TAG = RegisterAsyncTask.class.getSimpleName();
     /**
      * コンテクスト受け取り用
      */
@@ -35,15 +35,16 @@ public class WriteAsyncTask extends AsyncTask<DivingLog, Integer, Boolean> {
      * コンストラクタ
      * {@inheritDoc}
      */
-    public WriteAsyncTask(@NonNull Context context){
+    public RegisterAsyncTask(@NonNull Context context) {
         super();
         weakReference = new WeakReference<>(context);
     }
 
     /**
      * DB保存処理
-     *
+     * <p>
      * {@inheritDoc}
+     *
      * @return 保存成功：true　失敗：false
      */
     @Override
@@ -85,7 +86,7 @@ public class WriteAsyncTask extends AsyncTask<DivingLog, Integer, Boolean> {
     }
 
     @Override
-    protected void onProgressUpdate(Integer... progress){
+    protected void onProgressUpdate(Integer... progress) {
         // 進捗状況の表示などの処理
     }
 
@@ -94,9 +95,9 @@ public class WriteAsyncTask extends AsyncTask<DivingLog, Integer, Boolean> {
      * {@inheritDoc}
      */
     @Override
-    protected void onPostExecute(Boolean result){
+    protected void onPostExecute(Boolean result) {
         super.onPostExecute(result);
-        if(null != registerCallback){
+        if (null != registerCallback) {
             registerCallback.onRegister(result);
         }
     }
@@ -104,16 +105,16 @@ public class WriteAsyncTask extends AsyncTask<DivingLog, Integer, Boolean> {
     /**
      * コールバック処理を設定
      *
-     * @param registerCallback　コールバックする内容
+     * @param registerCallback 　コールバックする内容
      */
-    public void setOnCallBack(@Nullable RegisterCallback registerCallback){
+    public void setOnCallBack(@Nullable RegisterCallback registerCallback) {
         this.registerCallback = registerCallback;
     }
 
     /**
      * コールバック用インターフェイス
      */
-    public interface RegisterCallback{
+    public interface RegisterCallback {
         void onRegister(Boolean result);
     }
 }

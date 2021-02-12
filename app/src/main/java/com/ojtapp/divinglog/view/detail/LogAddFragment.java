@@ -17,7 +17,7 @@ import androidx.fragment.app.Fragment;
 
 import com.ojtapp.divinglog.R;
 import com.ojtapp.divinglog.appif.DivingLog;
-import com.ojtapp.divinglog.controller.WriteAsyncTask;
+import com.ojtapp.divinglog.controller.RegisterAsyncTask;
 import com.ojtapp.divinglog.view.main.MainActivity;
 
 import java.text.SimpleDateFormat;
@@ -82,10 +82,10 @@ public class LogAddFragment extends Fragment {
                 setDateToDivingLog(divingLog);
 
                 // -----【DB】保存処理--------------
-                WriteAsyncTask registerAsyncTask = new WriteAsyncTask(requireContext());
+                RegisterAsyncTask registerAsyncTask = new RegisterAsyncTask(requireContext());
 
                 // コールバック処理を設定
-                registerAsyncTask.setOnCallBack(new WriteAsyncTask.RegisterCallback() {
+                registerAsyncTask.setOnCallBack(new RegisterAsyncTask.RegisterCallback() {
 
                     @Override
                     public void onRegister(Boolean result) {

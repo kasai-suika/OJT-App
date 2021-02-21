@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.ojtapp.divinglog.LogConstant;
 
 public class OpenHelper extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 8;
     private static final String DATABASE_NAME = "DivingLog.db";
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + LogConstant.TABLE_NAME + "(" +
@@ -30,7 +30,8 @@ public class OpenHelper extends SQLiteOpenHelper {
                     LogConstant.VISIBILITY + " INT, " +
                     LogConstant.MEMBER_NAVIGATE + " TEXT, " +
                     LogConstant.MEMBER + " TEXT, " +
-                    LogConstant.MEMO + " TEXT" + ")";
+                    LogConstant.MEMO + " TEXT, " +
+                    LogConstant.PICTURE + " BLOB" + ")";
 
 
     private static final String SQL_DELETE_ENTRIES =

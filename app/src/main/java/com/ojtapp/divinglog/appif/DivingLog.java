@@ -1,5 +1,7 @@
 package com.ojtapp.divinglog.appif;
 
+import android.widget.ImageView;
+
 import java.io.Serializable;
 
 public class DivingLog implements Serializable {
@@ -26,6 +28,7 @@ public class DivingLog implements Serializable {
     private String timeStart;
     private String timeEnd;
     private String timeDive;
+    private byte[] pictureBytes;
 
     /**
      * コンストラクタ
@@ -195,5 +198,13 @@ public class DivingLog implements Serializable {
 
     public void setTimeDive(String timeDive) {
         this.timeDive = timeDive;
+    }
+
+    public byte[] getPictureBytes() {
+        return pictureBytes;
+    }
+
+    public void setPictureBytes(byte[] picture) {
+        this.pictureBytes = picture;
     }
 }

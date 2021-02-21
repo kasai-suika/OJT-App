@@ -79,6 +79,7 @@ public class RegisterAsyncTask extends AsyncTask<DivingLog, Integer, Boolean> {
         values.put(LogConstant.MEMBER, divingLogs[0].getMember());
         values.put(LogConstant.MEMBER_NAVIGATE, divingLogs[0].getMemberNavigate());
         values.put(LogConstant.MEMO, divingLogs[0].getMemo());
+        values.put(LogConstant.PICTURE, divingLogs[0].getPictureBytes());
 
         // 保存実行
         db.insert(LogConstant.TABLE_NAME, null, values);

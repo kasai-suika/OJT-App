@@ -85,7 +85,8 @@ public class DisplayAsyncTask extends AsyncTask<Integer, Integer, List<DivingLog
                 LogConstant.VISIBILITY,
                 LogConstant.MEMBER,
                 LogConstant.MEMBER_NAVIGATE,
-                LogConstant.MEMO
+                LogConstant.MEMO,
+                LogConstant.PICTURE
         };
 
         Cursor cursor = db.query(
@@ -196,6 +197,10 @@ public class DisplayAsyncTask extends AsyncTask<Integer, Integer, List<DivingLog
         String memo = cursor.getString(
                 cursor.getColumnIndexOrThrow(LogConstant.MEMO));
         log.setMemo(memo);
+        // 写真
+        byte[] pictureBytes = cursor.getBlob(
+                cursor.getColumnIndexOrThrow(LogConstant.PICTURE));
+        log.setPictureBytes(pictureBytes);
 
         return log;
     }

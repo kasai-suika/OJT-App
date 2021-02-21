@@ -15,8 +15,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.ojtapp.divinglog.R;
+import com.ojtapp.divinglog.SortMenu;
 import com.ojtapp.divinglog.appif.DivingLog;
 import com.ojtapp.divinglog.controller.DisplayAsyncTask;
+import com.ojtapp.divinglog.util.SharedPreferencesUtil;
 import com.ojtapp.divinglog.view.detail.LogActivity;
 
 import java.util.List;
@@ -77,7 +79,7 @@ public class LogFragment extends Fragment {
         refreshView();
     }
 
-    private void refreshView() {
+    public void refreshView() {
         Log.d(TAG, "refreshView()");
         final Context context = requireContext();
         //-------【DB】データ取得処理-------------
@@ -88,6 +90,10 @@ public class LogFragment extends Fragment {
             @Override
             public void onDisplay(List<DivingLog> logList) {
                 Log.d(TAG, "onDisplay");
+                // 記憶されたソートモードを取得
+                int memorySortMode = MainActivity.sharedPreferencesUtil.getInt(SharedPreferencesUtil.KEY_SORT_MODE);
+                SortMenu.sortDivingLog(logList, memorySortMode);
+
                 // Adapterの設定
                 LogFragment.this.logAdapter = new LogAdapter(context, R.layout.list_log_item, logList);
                 listView.setAdapter(logAdapter);

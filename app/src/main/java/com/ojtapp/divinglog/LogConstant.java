@@ -22,4 +22,5 @@ public class LogConstant {
     public static final String MEMBER_NAVIGATE= "member_navigate";
     public static final String MEMBER = "member";
     public static final String MEMO = "memo";
+    public static final String PICTURE = "picture";
 }

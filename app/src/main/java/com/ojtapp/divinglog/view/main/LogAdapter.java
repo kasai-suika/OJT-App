@@ -63,7 +63,6 @@ public class LogAdapter extends ArrayAdapter<DivingLog> {
             Log.e(TAG, "divingLog = null");
         }
 
-        // TODO:リスト内表示の「編集ボタン」を押下
         ImageButton editButton = view.findViewById(R.id.list_button_edit);
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,6 +76,18 @@ public class LogAdapter extends ArrayAdapter<DivingLog> {
             }
         });
 
+//        // 削除ボタン押下時の設定
+//        ImageButton deleteButton = view.findViewById(R.id.list_button_delete);
+//        deleteButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Log.d(TAG, "削除ボタン押下");
+//                Activity tmpActivity = (Activity) context;
+//                FragmentManager fragmentManager = tmpActivity.getFragmentManager();
+//                DeleteDialogFragment deleteDialogFragment = DeleteDialogFragment.newInstance(divingLog);
+//                deleteDialogFragment.show(fragmentManager, null);
+//            }
+//        });
 
         return view;
     }

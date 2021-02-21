@@ -36,4 +36,9 @@
     <string name="edit">編集</string>
     <string name="delete">削除</string>
     <string name="update">更新</string>
+    <string name="string_sort">並び替え</string>
+    <string name="content_description_edit">編集できます</string>
+    <string name="content_description_delete">削除できます</string>
+    <string name="button_add_picture">写真を追加</string>
+    <string name="content_description_display_picture">選択した写真を表示します</string>
 </resources>

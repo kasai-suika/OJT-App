@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.ojtapp.divinglog.R;
 import com.ojtapp.divinglog.appif.DivingLog;
+import com.ojtapp.divinglog.util.DbBitmapUtil;
 
 public class LogDetailFragment extends Fragment {
     private static final String TAG = LogDetailFragment.class.getSimpleName();
@@ -70,6 +72,7 @@ public class LogDetailFragment extends Fragment {
         TextView member = view.findViewById(R.id.det_member);
         TextView navi = view.findViewById(R.id.det_navi);
         TextView memo = view.findViewById(R.id.det_memo);
+        ImageView picture = view.findViewById(R.id.image_view_select_picture);
 
         // 値をセット
         if (divingLog != null) {
@@ -88,6 +91,7 @@ public class LogDetailFragment extends Fragment {
             member.setText(divingLog.getMember());
             navi.setText(divingLog.getMemberNavigate());
             memo.setText(divingLog.getMemo());
+            picture.setImageBitmap(DbBitmapUtil.getImage(divingLog.getPictureBytes()));
         }
 
         // 編集ボタン押下時の設定
@@ -116,6 +120,13 @@ public class LogDetailFragment extends Fragment {
         });
     }
 
+    /**
+     * int型をString型に変換する。
+     * データがない場合は空文字を返す。
+     *
+     * @param intData 　int型のデータ
+     * @return String型に変換したデータ
+     */
     public static String createStringData(int intData) {
         if (LogAddFragment.NO_DATA == intData) {
             return "";

@@ -1,7 +1,12 @@
 package com.ojtapp.divinglog.view.detail;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,17 +14,22 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.ojtapp.divinglog.R;
 import com.ojtapp.divinglog.appif.DivingLog;
 import com.ojtapp.divinglog.controller.RegisterAsyncTask;
+import com.ojtapp.divinglog.util.DbBitmapUtil;
 import com.ojtapp.divinglog.view.main.MainActivity;
 
+import java.io.FileDescriptor;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -28,7 +38,6 @@ public class LogAddFragment extends Fragment {
     private static final String TAG = LogActivity.class.getSimpleName();
     public static final int NO_DATA = -1;
 
-    private Button makeTaskButton;
     private EditText diveNumber;
     private EditText place;
     private EditText point;
@@ -46,6 +55,8 @@ public class LogAddFragment extends Fragment {
     private DatePicker date;
     private TimePicker timeStart;
     private TimePicker timeEnd;
+    private ImageView picture;
+    private Bitmap bmp = null;
 
     public static Fragment newInstance() {
         android.util.Log.d(TAG, "newInstance()");
@@ -68,10 +79,23 @@ public class LogAddFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceStat) {
         super.onViewCreated(view, savedInstanceStat);
         android.util.Log.d(TAG, "onViewCreated");
+        Button makeTaskButton = view.findViewById(R.id.button_make_task);
+        FloatingActionButton selectPictureButton = view.findViewById(R.id.button_add_picture);
 
         // 変数とレイアウトを紐づけ
         linkVariable(view);
 
+        // 写真追加ボタン押下
+        selectPictureButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.setType("image/*");
+                startActivityForResult(intent, MainActivity.RESULT_PICK_IMAGEFILE);
+            }
+        });
+
+        // 作成ボタン押下
         makeTaskButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,6 +103,7 @@ public class LogAddFragment extends Fragment {
 
                 //---------DivingLogクラスにセット------------
                 DivingLog divingLog = new DivingLog();
+                // データをDivingLogクラスにセット
                 setDateToDivingLog(divingLog);
 
                 // -----【DB】保存処理--------------
@@ -104,8 +129,41 @@ public class LogAddFragment extends Fragment {
         });
     }
 
-    private void linkVariable(View view) {
-        makeTaskButton = view.findViewById(R.id.button_make_task);
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+        if (requestCode == MainActivity.RESULT_PICK_IMAGEFILE && resultCode == Activity.RESULT_OK) {
+            Uri uri;
+            if (resultData != null) {
+                uri = resultData.getData();
+
+                try {
+                    bmp = getBitmapFromUri(uri);
+                    picture.setImageBitmap(bmp);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    /**
+     * Uri型をBitmap型に変換する
+     *
+     * @param uri 選択した写真のuri
+     * @return 引数のuriをBitmapに変換したもの
+     * @throws IOException 例外
+     */
+    @NonNull
+    private Bitmap getBitmapFromUri(@NonNull Uri uri) throws IOException {
+        ParcelFileDescriptor parcelFileDescriptor =
+                getContext().getContentResolver().openFileDescriptor(uri, "r");
+        FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+        Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+        parcelFileDescriptor.close();
+        return image;
+    }
+
+    private void linkVariable(@NonNull View view) {
         diveNumber = view.findViewById(R.id.add_dive_number);
         place = view.findViewById(R.id.add_place);
         point = view.findViewById(R.id.add_point);
@@ -123,9 +181,15 @@ public class LogAddFragment extends Fragment {
         date = view.findViewById(R.id.add_date);
         timeStart = view.findViewById(R.id.add_time_start);
         timeEnd = view.findViewById(R.id.add_time_end);
+        picture = view.findViewById(R.id.image_view_select_picture);
     }
 
-    public void setDateToDivingLog(DivingLog divingLog) {
+    /**
+     * DivingLogクラスに値をセットする
+     *
+     * @param divingLog 　セットするDivingLogクラス
+     */
+    public void setDateToDivingLog(@NonNull DivingLog divingLog) {
         // 本数
         divingLog.setDiveNumber(Integer.parseInt(diveNumber.getText().toString()));
 
@@ -216,9 +280,21 @@ public class LogAddFragment extends Fragment {
         calendar.set(Calendar.HOUR, hour);
         calendar.set(Calendar.MINUTE, minute);
         divingLog.setTimeDive(timeFormat.format(calendar.getTimeInMillis()));
+
+        // 写真
+        if (null != bmp) {
+            divingLog.setPictureBytes(DbBitmapUtil.getBytes(bmp));
+        }
     }
 
-    public static int getIntData(String strData) {
+    /**
+     * String型をint型に変換する。
+     * データがない場合は-1を返す。
+     *
+     * @param strData　String型のデータ
+     * @return int型に変換したデータ
+     */
+    public static int getIntData(@NonNull String strData) {
         if (0 == strData.length()) {
             return NO_DATA;
         } else {

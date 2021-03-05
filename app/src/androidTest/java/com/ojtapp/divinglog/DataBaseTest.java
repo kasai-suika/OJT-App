@@ -60,7 +60,7 @@ public class DataBaseTest {
         DisplayAsyncTask displayAsyncTask = new DisplayAsyncTask(context);
         displayAsyncTask.setOnCallBack(new DisplayAsyncTask.DisplayCallback() {
             @Override
-            public void onDisplay(List<DivingLog> logList) {
+            public void onSuccess(List<DivingLog> logList) {
                 dataPosition = logList.size() - 1;  // 最後に保存したデータの場所を取得
                 divingLogs[1] = logList.get(dataPosition);  // DB内のデータを空のDivingLogクラスに設定
                 assertGetData(divingLogs[1], INDEX0);   // 指定したDivingLogクラスに指定した要素の定数値が入っているか判定
@@ -82,12 +82,12 @@ public class DataBaseTest {
         UpdateAsyncTask updateAsyncTask = new UpdateAsyncTask(context);
         updateAsyncTask.setUpdateCallback(new UpdateAsyncTask.UpdateCallback() {
             @Override
-            public void onUpdate(boolean result) {
+            public void onSuccess(boolean result) {
                 // -----【DB】取得処理--------------
                 DisplayAsyncTask displayAsyncTask = new DisplayAsyncTask(context);
                 displayAsyncTask.setOnCallBack(new DisplayAsyncTask.DisplayCallback() {
                     @Override
-                    public void onDisplay(List<DivingLog> logList) {
+                    public void onSuccess(List<DivingLog> logList) {
                         // listの最後のデータを取得
                         divingLogs[1] = logList.get(dataPosition);  // getDataFromDB() で取得したデータの場所と同じ場所にあるデータを取得
                         assertGetData(divingLogs[1], INDEX1);   // 指定したDivingLogクラスに指定した要素の定数値が入っているか判定
@@ -107,7 +107,7 @@ public class DataBaseTest {
         RegisterAsyncTask registerAsyncTask = new RegisterAsyncTask(context);
         registerAsyncTask.setOnCallBack(new RegisterAsyncTask.RegisterCallback() {
             @Override
-            public void onRegister(Boolean result) {
+            public void onSuccess(Boolean result) {
                 countDownLatch.countDown();
             }
         });

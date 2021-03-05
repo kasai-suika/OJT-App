@@ -31,7 +31,7 @@ public class OpenHelper extends SQLiteOpenHelper {
                     LogConstant.MEMBER_NAVIGATE + " TEXT, " +
                     LogConstant.MEMBER + " TEXT, " +
                     LogConstant.MEMO + " TEXT, " +
-                    LogConstant.PICTURE + " BLOB" + ")";
+                    LogConstant.PICTURE + " TEXT" + ")";
 
 
     private static final String SQL_DELETE_ENTRIES =

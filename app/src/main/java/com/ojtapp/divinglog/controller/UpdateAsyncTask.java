@@ -42,7 +42,7 @@ public class UpdateAsyncTask extends AsyncTask<DivingLog, Integer, Boolean> {
     /**
      * DB更新処理
      *
-     * @param divingLogs　ダイビングログ
+     * @param divingLogs 　ダイビングログ
      * @return 更新処理が成功：true
      */
     @Override
@@ -74,6 +74,7 @@ public class UpdateAsyncTask extends AsyncTask<DivingLog, Integer, Boolean> {
         values.put(LogConstant.MEMBER, divingLogs[0].getMember());
         values.put(LogConstant.MEMBER_NAVIGATE, divingLogs[0].getMemberNavigate());
         values.put(LogConstant.MEMO, divingLogs[0].getMemo());
+        values.put(LogConstant.PICTURE, divingLogs[0].getPictureUri());
 
         // 更新処理
         String selection = LogConstant.LOG_ID + " = ?";
@@ -89,7 +90,7 @@ public class UpdateAsyncTask extends AsyncTask<DivingLog, Integer, Boolean> {
     }
 
     @Override
-    protected  void  onProgressUpdate(Integer... progress){
+    protected void onProgressUpdate(Integer... progress) {
     }
 
     /**
@@ -99,8 +100,12 @@ public class UpdateAsyncTask extends AsyncTask<DivingLog, Integer, Boolean> {
     @Override
     protected void onPostExecute(Boolean result) {
         super.onPostExecute(result);
-        if (null != updateCallback){
-            updateCallback.onUpdate(result);
+        if (null != updateCallback) {
+            if (result) {
+                updateCallback.onSuccess();
+            } else {
+                updateCallback.onFailure();
+            }
         }
     }
 
@@ -109,7 +114,7 @@ public class UpdateAsyncTask extends AsyncTask<DivingLog, Integer, Boolean> {
      *
      * @param updateCallback コールバックする内容
      */
-    public void setUpdateCallback(@Nullable UpdateCallback updateCallback){
+    public void setUpdateCallback(@Nullable UpdateCallback updateCallback) {
         this.updateCallback = updateCallback;
     }
 
@@ -117,6 +122,8 @@ public class UpdateAsyncTask extends AsyncTask<DivingLog, Integer, Boolean> {
      * コールバック用インターフェイス
      */
     public interface UpdateCallback {
-        void onUpdate(boolean result);
+        void onSuccess();
+
+        void onFailure();
     }
 }

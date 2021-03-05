@@ -3,7 +3,6 @@ package com.ojtapp.divinglog.controller;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -53,8 +52,7 @@ public class DeleteAsyncTask extends AsyncTask<DivingLog, Integer, Boolean> {
     }
 
     @Override
-    protected void onProgressUpdate(Integer... integers){
-
+    protected void onProgressUpdate(Integer... integers) {
     }
 
     /**
@@ -64,25 +62,31 @@ public class DeleteAsyncTask extends AsyncTask<DivingLog, Integer, Boolean> {
     @Override
     protected void onPostExecute(Boolean result) {
         super.onPostExecute(result);
-        if (null != deleteCallback){
-            deleteCallback.onDeleted(result);
+        if (null != deleteCallback) {
+            if (result) {
+                deleteCallback.onSuccess();
+            } else {
+                deleteCallback.onFailure();
+            }
         }
     }
 
     /**
      * コールバック処理を設定
      *
-     * @param deleteCallback　コールバックする内容
+     * @param deleteCallback 　コールバックする内容
      */
-    public void setDeleteCallback(@Nullable DeleteCallback deleteCallback){
+    public void setDeleteCallback(@Nullable DeleteCallback deleteCallback) {
         this.deleteCallback = deleteCallback;
     }
 
     /**
      * コールバック用インターフェイス
      */
-   public interface DeleteCallback {
-        void onDeleted(boolean result);
+    public interface DeleteCallback {
+        void onSuccess();
+
+        void onFailure();
     }
 
 }

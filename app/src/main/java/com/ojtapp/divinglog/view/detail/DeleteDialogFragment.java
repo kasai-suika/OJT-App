@@ -22,28 +22,36 @@ public class DeleteDialogFragment extends DialogFragment {
      * クラス名
      */
     private static final String TAG = DeleteDialogFragment.class.getSimpleName();
-
     /**
      * ダイアログのタイトル
      */
     private static final String TITLE_DELETE_DIALOG = "削除確認";
-
     /**
      * ダイアログのメッセージ
      */
     private static final String MESSAGE_DELETE_DIALOG = "削除してもよろしいですか？";
-
     /**
      * ポジティブボタンの名称
      */
     private static final String BUTTON_POSITIVE = "はい";
-
     /**
      * ネガティブボタンの名称
      */
     private static final String BUTTON_NEGATIVE = "いいえ";
-
+    /**
+     * DivingLogオブジェクト受け取り用キー
+     */
+    private static final String LOG_KEY = "DIVE_LOG";
+    /**
+     * コンテクスト
+     */
     private Context context;
+
+    /**
+     * デフォルトコンストラクタ
+     */
+    DeleteDialogFragment() {
+    }
 
     /**
      * インスタンスの作成
@@ -57,7 +65,7 @@ public class DeleteDialogFragment extends DialogFragment {
         DeleteDialogFragment fragment = new DeleteDialogFragment();
 
         Bundle args = new Bundle();
-        args.putSerializable(LogActivity.TABLE_KEY, divingLog);
+        args.putSerializable(LOG_KEY, divingLog);
         fragment.setArguments(args);
 
         return fragment;
@@ -89,10 +97,15 @@ public class DeleteDialogFragment extends DialogFragment {
 
         deleteAsyncTask.setDeleteCallback(new DeleteAsyncTask.DeleteCallback() {
             @Override
-            public void onDeleted(boolean result) {
+            public void onSuccess() {
                 Intent intent = new Intent(DeleteDialogFragment.this.context, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
+            }
+
+            @Override
+            public void onFailure() {
+                Log.e(TAG, "正常に削除されませんでした");
             }
         });
 
@@ -103,7 +116,7 @@ public class DeleteDialogFragment extends DialogFragment {
         }
 
         // シリアライズしたDivingLogクラスを格納
-        final DivingLog divingLog = (DivingLog) args.getSerializable(LogActivity.TABLE_KEY);
+        final DivingLog divingLog = (DivingLog) args.getSerializable(LOG_KEY);
 
         // 非同期処理を実行
         deleteAsyncTask.execute(divingLog);

@@ -1,7 +1,12 @@
 package com.ojtapp.divinglog.view.detail;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,18 +18,34 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.ojtapp.divinglog.R;
 import com.ojtapp.divinglog.appif.DivingLog;
-import com.ojtapp.divinglog.util.DbBitmapUtil;
+
+import java.io.FileDescriptor;
+import java.io.IOException;
 
 public class LogDetailFragment extends Fragment {
+    /**
+     * クラス名
+     */
     private static final String TAG = LogDetailFragment.class.getSimpleName();
+    /**
+     * DivingLogオブジェクト受け取り用キー
+     */
+    private static final String LOG_KEY = "DIVE_LOG";
+
+    /**
+     * デフォルトコンストラクタ
+     */
+    LogDetailFragment() {
+    }
 
     /**
      * フラグメントのインスタンスを作成
-     * {@inheritDoc}
+     * @return フラグメント
      */
     public static Fragment newInstance(DivingLog divingLog) {
         android.util.Log.d(TAG, "newInstance()");
@@ -32,7 +53,7 @@ public class LogDetailFragment extends Fragment {
         LogDetailFragment fragment = new LogDetailFragment();
 
         Bundle args = new Bundle();
-        args.putSerializable(LogActivity.TABLE_KEY, divingLog);
+        args.putSerializable(LOG_KEY, divingLog);
         fragment.setArguments(args);
 
         return fragment;
@@ -54,7 +75,35 @@ public class LogDetailFragment extends Fragment {
         }
 
         // シリアライズしたDivingLogクラスを取得
-        final DivingLog divingLog = (DivingLog) args.getSerializable(LogActivity.TABLE_KEY);
+        final DivingLog divingLog = (DivingLog) args.getSerializable(LOG_KEY);
+
+        // 編集ボタン押下時の設定
+        Button editButton = view.findViewById(R.id.detail_button_edit);
+        editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "編集ボタン押下");
+                Intent intent = new Intent(getContext(), LogActivity.class);
+                intent.putExtra(LogActivity.MODE_KEY, LogActivity.Mode.EDIT_MOOD.value);
+                intent.putExtra(LogActivity.TABLE_KEY, divingLog);
+                startActivity(intent);
+            }
+        });
+
+        // 削除ボタン押下時の設定
+        Button deleteButton = view.findViewById(R.id.detail_button_delete);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "削除ボタン押下");
+                FragmentActivity fragmentActivity = getActivity();
+                assert fragmentActivity != null;
+                FragmentManager fragmentManager = fragmentActivity.getSupportFragmentManager();
+                assert divingLog != null;
+                DeleteDialogFragment deleteDialogFragment = DeleteDialogFragment.newInstance(divingLog);
+                deleteDialogFragment.show(fragmentManager, null);
+            }
+        });
 
         // 変数とレイアウトのViewを紐づける
         TextView diveNumber = view.findViewById(R.id.det_dive_number);
@@ -91,33 +140,33 @@ public class LogDetailFragment extends Fragment {
             member.setText(divingLog.getMember());
             navi.setText(divingLog.getMemberNavigate());
             memo.setText(divingLog.getMemo());
-            picture.setImageBitmap(DbBitmapUtil.getImage(divingLog.getPictureBytes()));
+
+            try {
+                Bitmap bitmap = getBitmapFromUri(Uri.parse(divingLog.getPictureUri()));
+                picture.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+    }
 
-        // 編集ボタン押下時の設定
-        Button editButton = view.findViewById(R.id.detail_button_edit);
-        editButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "編集ボタン押下");
-                Intent intent = new Intent(getContext(), LogActivity.class);
-                intent.putExtra(LogActivity.MODE_KEY, LogActivity.Mode.EDIT_MOOD.value);
-                intent.putExtra(LogActivity.TABLE_KEY, divingLog);
-                startActivity(intent);
-            }
-        });
-
-        // 削除ボタン押下時の設定
-        Button deleteButton = view.findViewById(R.id.detail_button_delete);
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "削除ボタン押下");
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                DeleteDialogFragment deleteDialogFragment = DeleteDialogFragment.newInstance(divingLog);
-                deleteDialogFragment.show(fragmentManager, null);
-            }
-        });
+    /**
+     * Uri型をBitmap型に変換する
+     *
+     * @param uri 選択した写真のuri
+     * @return 引数のuriをBitmapに変換したもの
+     * @throws IOException 例外
+     */
+    @NonNull
+    private Bitmap getBitmapFromUri(@NonNull Uri uri) throws IOException {
+        Context context = getContext();
+        assert context != null;
+        ParcelFileDescriptor parcelFileDescriptor =
+                context.getContentResolver().openFileDescriptor(uri, "r");
+        FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+        Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+        parcelFileDescriptor.close();
+        return image;
     }
 
     /**

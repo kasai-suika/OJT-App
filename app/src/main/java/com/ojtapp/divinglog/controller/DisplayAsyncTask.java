@@ -198,9 +198,9 @@ public class DisplayAsyncTask extends AsyncTask<Integer, Integer, List<DivingLog
                 cursor.getColumnIndexOrThrow(LogConstant.MEMO));
         log.setMemo(memo);
         // 写真
-        byte[] pictureBytes = cursor.getBlob(
+        String pictureUri = cursor.getString(
                 cursor.getColumnIndexOrThrow(LogConstant.PICTURE));
-        log.setPictureBytes(pictureBytes);
+        log.setPictureUri(pictureUri);
 
         return log;
     }
@@ -218,7 +218,11 @@ public class DisplayAsyncTask extends AsyncTask<Integer, Integer, List<DivingLog
     protected void onPostExecute(List<DivingLog> logList) {
         super.onPostExecute(logList);
         if (null != displayCallback) {
-            displayCallback.onDisplay(logList);
+            if (null != logList) {
+                displayCallback.onSuccess(logList);
+            } else {
+                displayCallback.onFailure();
+            }
         }
     }
 
@@ -235,6 +239,8 @@ public class DisplayAsyncTask extends AsyncTask<Integer, Integer, List<DivingLog
      * コールバック用インターフェイス
      */
     public interface DisplayCallback {
-        void onDisplay(List<DivingLog> logList);
+        void onSuccess(List<DivingLog> logList);
+
+        void onFailure();
     }
 }

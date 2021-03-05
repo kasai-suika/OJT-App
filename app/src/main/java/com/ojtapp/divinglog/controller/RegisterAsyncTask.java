@@ -79,7 +79,7 @@ public class RegisterAsyncTask extends AsyncTask<DivingLog, Integer, Boolean> {
         values.put(LogConstant.MEMBER, divingLogs[0].getMember());
         values.put(LogConstant.MEMBER_NAVIGATE, divingLogs[0].getMemberNavigate());
         values.put(LogConstant.MEMO, divingLogs[0].getMemo());
-        values.put(LogConstant.PICTURE, divingLogs[0].getPictureBytes());
+        values.put(LogConstant.PICTURE, divingLogs[0].getPictureUri());
 
         // 保存実行
         db.insert(LogConstant.TABLE_NAME, null, values);
@@ -99,7 +99,11 @@ public class RegisterAsyncTask extends AsyncTask<DivingLog, Integer, Boolean> {
     protected void onPostExecute(Boolean result) {
         super.onPostExecute(result);
         if (null != registerCallback) {
-            registerCallback.onRegister(result);
+            if (result) {
+                registerCallback.onSuccess();
+            } else {
+                registerCallback.onFailure();
+            }
         }
     }
 
@@ -116,6 +120,8 @@ public class RegisterAsyncTask extends AsyncTask<DivingLog, Integer, Boolean> {
      * コールバック用インターフェイス
      */
     public interface RegisterCallback {
-        void onRegister(Boolean result);
+        void onSuccess();
+
+        void onFailure();
     }
 }

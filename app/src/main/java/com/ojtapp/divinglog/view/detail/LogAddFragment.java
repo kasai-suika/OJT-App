@@ -1,6 +1,7 @@
 package com.ojtapp.divinglog.view.detail;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -25,7 +26,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.ojtapp.divinglog.R;
 import com.ojtapp.divinglog.appif.DivingLog;
 import com.ojtapp.divinglog.controller.RegisterAsyncTask;
-import com.ojtapp.divinglog.util.DbBitmapUtil;
 import com.ojtapp.divinglog.view.main.MainActivity;
 
 import java.io.FileDescriptor;
@@ -35,10 +35,14 @@ import java.util.Calendar;
 import java.util.Locale;
 
 public class LogAddFragment extends Fragment {
+    /**
+     * クラスの名前
+     */
     private static final String TAG = LogActivity.class.getSimpleName();
+
     public static final int NO_DATA = -1;
 
-    private EditText diveNumber;
+    private EditText diveNumber;    // TODO:変数まみれはみにくい。リストやenumでまとめられないか。（ライフサイクル艇にはonCreatedViewで再設定されるからＯＫ？）
     private EditText place;
     private EditText point;
     private EditText depthMax;
@@ -56,8 +60,19 @@ public class LogAddFragment extends Fragment {
     private TimePicker timeStart;
     private TimePicker timeEnd;
     private ImageView picture;
-    private Bitmap bmp = null;
+    private Uri uri;
 
+    /**
+     * デフォルトコンストラクタ
+     */
+    LogAddFragment() {
+    }
+
+    /**
+     * フラグメントのインスタンスを作成
+     *
+     * @return フラグメント
+     */
     public static Fragment newInstance() {
         android.util.Log.d(TAG, "newInstance()");
         return new LogAddFragment();
@@ -111,15 +126,19 @@ public class LogAddFragment extends Fragment {
 
                 // コールバック処理を設定
                 registerAsyncTask.setOnCallBack(new RegisterAsyncTask.RegisterCallback() {
-
                     @Override
-                    public void onRegister(Boolean result) {
+                    public void onSuccess() {
                         // --------最初の画面へ戻る処理------
                         // 情報をintentに詰める
                         Intent intent = new Intent(getContext(), MainActivity.class);
                         // 指定したアクティビティより上のViewを削除
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
+                    }
+
+                    @Override
+                    public void onFailure() {
+                        Log.e(TAG, "正常にデータを保存できませんでした");
                     }
                 });
 
@@ -132,12 +151,16 @@ public class LogAddFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
         if (requestCode == MainActivity.RESULT_PICK_IMAGEFILE && resultCode == Activity.RESULT_OK) {
-            Uri uri;
             if (resultData != null) {
                 uri = resultData.getData();
 
+                // URIの権限を保持する
+                final int takeFlags = resultData.getFlags()
+                        & (Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                getContext().getContentResolver().takePersistableUriPermission(uri, takeFlags);
                 try {
-                    bmp = getBitmapFromUri(uri);
+                    Bitmap bmp = getBitmapFromUri(uri);
                     picture.setImageBitmap(bmp);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -155,14 +178,21 @@ public class LogAddFragment extends Fragment {
      */
     @NonNull
     private Bitmap getBitmapFromUri(@NonNull Uri uri) throws IOException {
+        Context context = getContext();
+        assert context != null;
         ParcelFileDescriptor parcelFileDescriptor =
-                getContext().getContentResolver().openFileDescriptor(uri, "r");
+                context.getContentResolver().openFileDescriptor(uri, "r");
         FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
         Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
         parcelFileDescriptor.close();
         return image;
     }
 
+    /**
+     * 変数とidを紐づける
+     *
+     * @param view View
+     */
     private void linkVariable(@NonNull View view) {
         diveNumber = view.findViewById(R.id.add_dive_number);
         place = view.findViewById(R.id.add_place);
@@ -189,7 +219,7 @@ public class LogAddFragment extends Fragment {
      *
      * @param divingLog 　セットするDivingLogクラス
      */
-    public void setDateToDivingLog(@NonNull DivingLog divingLog) {
+    private void setDateToDivingLog(@NonNull DivingLog divingLog) {
         // 本数
         divingLog.setDiveNumber(Integer.parseInt(diveNumber.getText().toString()));
 
@@ -282,16 +312,14 @@ public class LogAddFragment extends Fragment {
         divingLog.setTimeDive(timeFormat.format(calendar.getTimeInMillis()));
 
         // 写真
-        if (null != bmp) {
-            divingLog.setPictureBytes(DbBitmapUtil.getBytes(bmp));
-        }
+        divingLog.setPictureUri(uri.toString());
     }
 
     /**
      * String型をint型に変換する。
      * データがない場合は-1を返す。
      *
-     * @param strData　String型のデータ
+     * @param strData 　String型のデータ
      * @return int型に変換したデータ
      */
     public static int getIntData(@NonNull String strData) {

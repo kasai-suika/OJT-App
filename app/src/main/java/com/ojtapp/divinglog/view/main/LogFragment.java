@@ -31,6 +31,9 @@ public class LogFragment extends Fragment {
     private ListView listView;
     private LogAdapter logAdapter;
 
+    LogFragment() {
+    }
+
     /**
      * フラグメントのインスタンスを作成
      * {@inheritDoc}
@@ -88,7 +91,7 @@ public class LogFragment extends Fragment {
         // コールバック処理
         displayAsyncTask.setOnCallBack(new DisplayAsyncTask.DisplayCallback() {
             @Override
-            public void onDisplay(List<DivingLog> logList) {
+            public void onSuccess(List<DivingLog> logList) {
                 Log.d(TAG, "onDisplay");
                 // 記憶されたソートモードを取得
                 int memorySortMode = MainActivity.sharedPreferencesUtil.getInt(SharedPreferencesUtil.KEY_SORT_MODE);
@@ -97,6 +100,11 @@ public class LogFragment extends Fragment {
                 // Adapterの設定
                 LogFragment.this.logAdapter = new LogAdapter(context, R.layout.list_log_item, logList);
                 listView.setAdapter(logAdapter);
+            }
+
+            @Override
+            public void onFailure() {
+                Log.e(TAG, "正常にデータを読み込みませんでした");
             }
         });
 

@@ -88,5 +88,4 @@ public class DeleteAsyncTask extends AsyncTask<DivingLog, Integer, Boolean> {
 
         void onFailure();
     }
-
 }

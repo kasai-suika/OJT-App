@@ -11,10 +11,6 @@ public class SharedPreferencesUtil {
      */
     public static final String FILE_NAME_SORT = "SORT_DATA";
     /**
-     * 写真のUriを記憶するファイル名
-     */
-    public static final String FILE_NAME_URI = "URI_DATA";
-    /**
      * ソートモードのポジション（デフォルト）
      */
     public static final int SORT_MODE_DEFAULT_POSITION = 0;
@@ -22,10 +18,6 @@ public class SharedPreferencesUtil {
      * ソートモードのキー
      */
     public static final String KEY_SORT_MODE = "KEY_SORT_MODE";
-    /**
-     * 写真のUriのキー
-     */
-    public static final String KEY_URI = "KEY_URI";
 
 
     @NonNull

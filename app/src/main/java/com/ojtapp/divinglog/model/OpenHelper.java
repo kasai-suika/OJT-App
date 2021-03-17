@@ -4,6 +4,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import androidx.annotation.NonNull;
+
 import com.ojtapp.divinglog.LogConstant;
 
 public class OpenHelper extends SQLiteOpenHelper {
@@ -41,13 +43,13 @@ public class OpenHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    // データベースの作成
-    public void onCreate(SQLiteDatabase db) {
+    @Override
+    public void onCreate(@NonNull SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_ENTRIES);
     }
 
     // データベースの更新
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    public void onUpgrade(@NonNull SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL(SQL_DELETE_ENTRIES);
         onCreate(db);
     }

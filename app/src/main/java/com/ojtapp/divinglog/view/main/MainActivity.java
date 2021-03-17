@@ -23,9 +23,9 @@ public class MainActivity extends AppCompatActivity {
     /**
      * クラス名
      */
-    public static final String TAG = MainActivity.class.getSimpleName();
-    public static SharedPreferencesUtil sharedPreferencesUtil;
+    private static final String TAG = MainActivity.class.getSimpleName();
     private LogFragment targetFragment;
+    public static SharedPreferencesUtil sharedPreferencesUtil;
     public static final int RESULT_PICK_IMAGEFILE = 1000;
 
 

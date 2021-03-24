@@ -51,6 +51,11 @@ public class RegisterAsyncTask extends AsyncTask<DivingLog, Integer, Boolean> {
     protected Boolean doInBackground(DivingLog... divingLogs) {
         android.util.Log.d(TAG, "doInBackground");
 
+        // 失敗
+        if (divingLogs[0] == null) {
+            return false;
+        }
+
         //　非同期での処理
         // DB作成
         OpenHelper openHelper = new OpenHelper(weakReference.get());

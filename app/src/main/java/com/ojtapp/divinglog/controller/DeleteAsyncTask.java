@@ -42,6 +42,11 @@ public class DeleteAsyncTask extends AsyncTask<DivingLog, Integer, Boolean> {
     protected Boolean doInBackground(DivingLog... divingLogs) {
         Log.d(TAG, "doInBackground()");
 
+        // 失敗
+        if (divingLogs[0] == null) {
+            return false;
+        }
+
         OpenHelper openHelper = new OpenHelper(weakReference.get());
         SQLiteDatabase db = openHelper.getWritableDatabase();
 

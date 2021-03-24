@@ -49,6 +49,11 @@ public class UpdateAsyncTask extends AsyncTask<DivingLog, Integer, Boolean> {
     protected Boolean doInBackground(DivingLog... divingLogs) {
         Log.d(TAG, "doInBackground");
 
+        // 失敗
+        if (divingLogs[0] == null) {
+            return false;
+        }
+
         // データベースを開く
         OpenHelper openHelper = new OpenHelper(weakReference.get());
         SQLiteDatabase db = openHelper.getWritableDatabase();

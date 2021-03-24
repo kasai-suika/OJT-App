@@ -105,6 +105,11 @@ public class DisplayAsyncTask extends AsyncTask<Integer, Integer, List<DivingLog
             logList.add(log);
         }
         cursor.close();
+
+        // 失敗
+        if (0 == logList.size()) {
+            return null;
+        }
         return logList;
     }
 

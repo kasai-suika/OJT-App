@@ -41,4 +41,6 @@
     <string name="content_description_delete">削除できます</string>
     <string name="button_add_picture">写真を追加</string>
     <string name="content_description_display_picture">選択した写真を表示します</string>
+    <string name="dialog_delete_progress_text">削除中です</string>
+    <string name="text_progress">実行中です…</string>
 </resources>

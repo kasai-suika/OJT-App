@@ -1,4 +1,4 @@
-package com.ojtapp.divinglog.view.detail;
+package com.ojtapp.divinglog.view.dialog;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

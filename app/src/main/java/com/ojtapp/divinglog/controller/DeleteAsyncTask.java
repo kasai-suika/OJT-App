@@ -7,10 +7,13 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.ojtapp.divinglog.LogConstant;
 import com.ojtapp.divinglog.appif.DivingLog;
 import com.ojtapp.divinglog.model.OpenHelper;
+import com.ojtapp.divinglog.view.dialog.ProgressDialogFragment;
 
 import java.lang.ref.WeakReference;
 
@@ -28,14 +31,35 @@ public class DeleteAsyncTask extends AsyncTask<DivingLog, Integer, Boolean> {
     @NonNull
     private final WeakReference<Context> weakReference;
     /**
+     * 削除処理実行Activity
+     */
+    private final FragmentActivity fragmentActivity;
+    private ProgressDialogFragment progressDialogFragment = null;
+    /**
      * コールバック設定用
      */
     @Nullable
     private DeleteCallback deleteCallback;
 
-    public DeleteAsyncTask(@NonNull Context context) {
+    public DeleteAsyncTask(@NonNull Context context, FragmentActivity activity) {
         super();
         this.weakReference = new WeakReference<>(context);
+        this.fragmentActivity = activity;
+    }
+
+    /**
+     * 実行前の事前処理
+     */
+    @Override
+    protected void onPreExecute() {
+        FragmentActivity fragmentActivity = this.fragmentActivity;
+        assert fragmentActivity != null;
+        FragmentManager fragmentManager = fragmentActivity.getSupportFragmentManager();
+
+
+        // プログレスダイアログの生成
+        this.progressDialogFragment = ProgressDialogFragment.newInstance("削除処理中");
+        this.progressDialogFragment.show(fragmentManager, null);
     }
 
     @Override
@@ -67,6 +91,14 @@ public class DeleteAsyncTask extends AsyncTask<DivingLog, Integer, Boolean> {
     @Override
     protected void onPostExecute(Boolean result) {
         super.onPostExecute(result);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if (progressDialogFragment != null && progressDialogFragment.getShowsDialog()) {
+            progressDialogFragment.dismiss(); //ダイアログを閉じる
+        }
         if (null != deleteCallback) {
             if (result) {
                 deleteCallback.onSuccess();

@@ -1,4 +1,4 @@
-package com.ojtapp.divinglog.view.detail;
+package com.ojtapp.divinglog.view.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
@@ -46,6 +47,10 @@ public class DeleteDialogFragment extends DialogFragment {
      * コンテクスト
      */
     private Context context;
+    /**
+     * 「はい」押下時のコールバック
+     */
+    public OnClickButtonListener onClickButtonListener;
 
     /**
      * デフォルトコンストラクタ
@@ -82,43 +87,59 @@ public class DeleteDialogFragment extends DialogFragment {
                 .setPositiveButton(BUTTON_POSITIVE, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        onClickPositiveButton();
+                        onClickButtonListener.onClickPositiveButton();
                     }
                 })
                 .setNegativeButton(BUTTON_NEGATIVE, null)
                 .show();
     }
 
+//    /**
+//     * 削除ダイアログにて「はい」を押下時に、そのログを削除する
+//     */
+//    private void onClickPositiveButtonListener() {
+//        DeleteAsyncTask deleteAsyncTask = new DeleteAsyncTask(this.context);
+//
+//        deleteAsyncTask.setDeleteCallback(new DeleteAsyncTask.DeleteCallback() {
+//            @Override
+//            public void onSuccess() {
+//                Intent intent = new Intent(DeleteDialogFragment.this.context, MainActivity.class);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                startActivity(intent);
+//            }
+//
+//            @Override
+//            public void onFailure() {
+//                Log.e(TAG, "正常に削除されませんでした");
+//            }
+//        });
+//
+//        Bundle args = getArguments();
+//        if (null == args) {
+//            Log.e(TAG, "args = null");
+//            return;
+//        }
+//
+//        // シリアライズしたDivingLogクラスを格納
+//        final DivingLog divingLog = (DivingLog) args.getSerializable(LOG_KEY);
+//
+//        // 非同期処理を実行
+//        deleteAsyncTask.execute(divingLog);
+//    }
+
     /**
-     * 削除ダイアログにて「はい」を押下時に、そのログを削除する
+     * コールバック処理を設定
+     *
+     * @param onClickButtonListener 　コールバックする内容
      */
-    private void onClickPositiveButton() {
-        DeleteAsyncTask deleteAsyncTask = new DeleteAsyncTask(this.context);
+    public void setOnClickButtonListener(@Nullable OnClickButtonListener onClickButtonListener) {
+        this.onClickButtonListener = onClickButtonListener;
+    }
 
-        deleteAsyncTask.setDeleteCallback(new DeleteAsyncTask.DeleteCallback() {
-            @Override
-            public void onSuccess() {
-                Intent intent = new Intent(DeleteDialogFragment.this.context, MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-            }
-
-            @Override
-            public void onFailure() {
-                Log.e(TAG, "正常に削除されませんでした");
-            }
-        });
-
-        Bundle args = getArguments();
-        if (null == args) {
-            Log.e(TAG, "args = null");
-            return;
-        }
-
-        // シリアライズしたDivingLogクラスを格納
-        final DivingLog divingLog = (DivingLog) args.getSerializable(LOG_KEY);
-
-        // 非同期処理を実行
-        deleteAsyncTask.execute(divingLog);
+    /**
+     * コールバック用インターフェイス
+     */
+    public interface OnClickButtonListener {
+        void onClickPositiveButton();
     }
 }

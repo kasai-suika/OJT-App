@@ -11,13 +11,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.ojtapp.divinglog.R;
 import com.ojtapp.divinglog.util.SharedPreferencesUtil;
 import com.ojtapp.divinglog.view.detail.LogActivity;
-import com.ojtapp.divinglog.view.detail.SortDialogFragment;
+import com.ojtapp.divinglog.view.dialog.SortDialogFragment;
 
 public class MainActivity extends AppCompatActivity {
     /**

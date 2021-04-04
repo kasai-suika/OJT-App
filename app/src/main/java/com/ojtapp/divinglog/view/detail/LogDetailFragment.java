@@ -23,6 +23,9 @@ import androidx.fragment.app.FragmentManager;
 
 import com.ojtapp.divinglog.R;
 import com.ojtapp.divinglog.appif.DivingLog;
+import com.ojtapp.divinglog.controller.DeleteAsyncTask;
+import com.ojtapp.divinglog.view.dialog.DeleteDialogFragment;
+import com.ojtapp.divinglog.view.main.MainActivity;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -101,6 +104,38 @@ public class LogDetailFragment extends Fragment {
                 FragmentManager fragmentManager = fragmentActivity.getSupportFragmentManager();
                 assert divingLog != null;
                 DeleteDialogFragment deleteDialogFragment = DeleteDialogFragment.newInstance(divingLog);
+                deleteDialogFragment.setOnClickButtonListener(new DeleteDialogFragment.OnClickButtonListener() {
+                    @Override
+                    public void onClickPositiveButton() {
+                        DeleteAsyncTask deleteAsyncTask = new DeleteAsyncTask(requireContext(), getActivity());
+
+                        deleteAsyncTask.setDeleteCallback(new DeleteAsyncTask.DeleteCallback() {
+                            @Override
+                            public void onSuccess() {
+                                Intent intent = new Intent(requireContext(), MainActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                            }
+
+                            @Override
+                            public void onFailure() {
+                                Log.e(TAG, "正常に削除されませんでした");
+                            }
+                        });
+
+                        Bundle args = getArguments();
+                        if (null == args) {
+                            Log.e(TAG, "args = null");
+                            return;
+                        }
+
+                        // シリアライズしたDivingLogクラスを格納
+                        final DivingLog divingLog = (DivingLog) args.getSerializable(LOG_KEY);
+
+                        // 非同期処理を実行
+                        deleteAsyncTask.execute(divingLog);
+                    }
+                });
                 deleteDialogFragment.show(fragmentManager, null);
             }
         });

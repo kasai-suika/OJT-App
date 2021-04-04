@@ -21,12 +21,15 @@ import android.widget.TimePicker;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.ojtapp.divinglog.R;
 import com.ojtapp.divinglog.appif.DivingLog;
+import com.ojtapp.divinglog.controller.DeleteAsyncTask;
 import com.ojtapp.divinglog.controller.UpdateAsyncTask;
+import com.ojtapp.divinglog.view.dialog.DeleteDialogFragment;
 import com.ojtapp.divinglog.view.main.MainActivity;
 
 import java.io.FileDescriptor;
@@ -82,6 +85,7 @@ public class LogEditFragment extends Fragment {
 
     /**
      * フラグメントのインスタンスを作成
+     *
      * @return フラグメント
      */
     public static Fragment newInstance(DivingLog divingLog) {
@@ -170,8 +174,46 @@ public class LogEditFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "削除ボタン押下");
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                final FragmentActivity activity = getActivity();
+
+                if ((activity == null) || (divingLog == null)) {
+                    Log.e(TAG, "正常に削除されませんでした");
+                    return;
+                }
+                FragmentManager fragmentManager = activity.getSupportFragmentManager();
                 DeleteDialogFragment deleteDialogFragment = DeleteDialogFragment.newInstance(divingLog);
+                deleteDialogFragment.setOnClickButtonListener(new DeleteDialogFragment.OnClickButtonListener() {
+                    @Override
+                    public void onClickPositiveButton() {
+                        DeleteAsyncTask deleteAsyncTask = new DeleteAsyncTask(requireContext(), activity);
+
+                        deleteAsyncTask.setDeleteCallback(new DeleteAsyncTask.DeleteCallback() {
+                            @Override
+                            public void onSuccess() {
+                                Intent intent = new Intent(requireContext(), MainActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                            }
+
+                            @Override
+                            public void onFailure() {
+                                Log.e(TAG, "正常に削除されませんでした");
+                            }
+                        });
+
+                        Bundle args = getArguments();
+                        if (null == args) {
+                            Log.e(TAG, "args = null");
+                            return;
+                        }
+
+                        // シリアライズしたDivingLogクラスを格納
+                        final DivingLog divingLog = (DivingLog) args.getSerializable(LOG_KEY);
+
+                        // 非同期処理を実行
+                        deleteAsyncTask.execute(divingLog);
+                    }
+                });
                 deleteDialogFragment.show(fragmentManager, null);
             }
         });
@@ -199,14 +241,15 @@ public class LogEditFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
         if (requestCode == MainActivity.RESULT_PICK_IMAGEFILE && resultCode == Activity.RESULT_OK) {
-            if (resultData != null) {
+            Context context = getContext();
+            if ((resultData != null) && (context != null)) {
                 uri = resultData.getData();
 
                 // URIの権限を保持する
                 final int takeFlags = resultData.getFlags()
                         & (Intent.FLAG_GRANT_READ_URI_PERMISSION
                         | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                getContext().getContentResolver().takePersistableUriPermission(uri, takeFlags);
+                context.getContentResolver().takePersistableUriPermission(uri, takeFlags);
                 try {
                     Bitmap bmp = getBitmapFromUri(uri);
                     picture.setImageBitmap(bmp);

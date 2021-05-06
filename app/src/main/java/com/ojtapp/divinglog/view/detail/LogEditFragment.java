@@ -81,7 +81,7 @@ public class LogEditFragment extends Fragment {
     /**
      * デフォルトコンストラクタ
      */
-    LogEditFragment() {
+    public LogEditFragment() {
     }
 
     /**

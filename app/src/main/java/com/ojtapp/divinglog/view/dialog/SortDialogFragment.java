@@ -34,6 +34,17 @@ public class SortDialogFragment extends DialogFragment {
      */
     private SortDialogCallback sortDialogCallback;
 
+    /**
+     * デフォルトコンストラクタ
+     */
+    public SortDialogFragment() {
+    }
+
+    /**
+     * フラグメントのインスタンスを作成
+     *
+     * @return フラグメント
+     */
     public static SortDialogFragment newInstance(int sortModePosition) {
         Log.d(TAG, "newInstance");
         SortDialogFragment fragment = new SortDialogFragment();

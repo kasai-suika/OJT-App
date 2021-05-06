@@ -47,7 +47,7 @@ public class LogDetailFragment extends Fragment {
     /**
      * デフォルトコンストラクタ
      */
-    LogDetailFragment() {
+    public LogDetailFragment() {
     }
 
     /**

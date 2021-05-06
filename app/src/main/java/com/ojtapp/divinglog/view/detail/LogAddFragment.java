@@ -66,7 +66,7 @@ public class LogAddFragment extends Fragment {
     /**
      * デフォルトコンストラクタ
      */
-    LogAddFragment() {
+    public LogAddFragment() {
     }
 
     /**

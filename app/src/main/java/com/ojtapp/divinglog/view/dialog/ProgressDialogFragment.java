@@ -9,12 +9,19 @@ import androidx.fragment.app.DialogFragment;
 import com.ojtapp.divinglog.R;
 
 public class ProgressDialogFragment extends DialogFragment {
+    private static final String DIALOG_TITLE = "DIALOG_TITLE";
+
+    /**
+     * デフォルトコンストラクタ
+     */
     public ProgressDialogFragment() {
     }
 
-    private static final String DIALOG_TITLE = "DIALOG_TITLE";
-
-    //インスタンス作成
+    /**
+     * フラグメントのインスタンスを作成
+     *
+     * @return フラグメント
+     */
     public static ProgressDialogFragment newInstance(String dialogTitle) {
         ProgressDialogFragment progressDialogFragment = new ProgressDialogFragment();
         Bundle args = new Bundle();

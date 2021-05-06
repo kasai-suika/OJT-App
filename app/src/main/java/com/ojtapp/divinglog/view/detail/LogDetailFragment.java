@@ -39,6 +39,10 @@ public class LogDetailFragment extends Fragment {
      * DivingLogオブジェクト受け取り用キー
      */
     private static final String LOG_KEY = "DIVE_LOG";
+    /**
+     * 編集ボタン押下のコールバック
+     */
+    private OnDetailFragmentEditButtonListener callback;
 
     /**
      * デフォルトコンストラクタ
@@ -48,6 +52,7 @@ public class LogDetailFragment extends Fragment {
 
     /**
      * フラグメントのインスタンスを作成
+     *
      * @return フラグメント
      */
     public static Fragment newInstance(DivingLog divingLog) {
@@ -86,10 +91,7 @@ public class LogDetailFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "編集ボタン押下");
-                Intent intent = new Intent(getContext(), LogActivity.class);
-                intent.putExtra(LogActivity.MODE_KEY, LogActivity.Mode.EDIT_MOOD.value);
-                intent.putExtra(LogActivity.TABLE_KEY, divingLog);
-                startActivity(intent);
+                callback.OnDetailFragmentEditButton(divingLog);
             }
         });
 
@@ -217,5 +219,13 @@ public class LogDetailFragment extends Fragment {
         } else {
             return String.valueOf(intData);
         }
+    }
+
+    public void setOnDetailFragmentEditButtonListener(OnDetailFragmentEditButtonListener callback) {
+        this.callback = callback;
+    }
+
+    public interface OnDetailFragmentEditButtonListener {
+        void OnDetailFragmentEditButton(DivingLog divingLog);
     }
 }

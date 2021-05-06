@@ -1,7 +1,6 @@
 package com.ojtapp.divinglog.view.main;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +13,6 @@ import androidx.annotation.NonNull;
 
 import com.ojtapp.divinglog.R;
 import com.ojtapp.divinglog.appif.DivingLog;
-import com.ojtapp.divinglog.view.detail.LogActivity;
 
 import java.util.List;
 
@@ -22,14 +20,12 @@ public class LogAdapter extends ArrayAdapter<DivingLog> {
     private static final String TAG = LogAdapter.class.getSimpleName();
     private final int resource;
     private final LayoutInflater inflater;
-    private final Context context;
 
     /**
      * コンストラクタ
      */
     LogAdapter(@NonNull Context context, int resource, List<DivingLog> items) {
         super(context, resource, items);
-        this.context = context;
         this.resource = resource;
         this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -63,31 +59,9 @@ public class LogAdapter extends ArrayAdapter<DivingLog> {
             Log.e(TAG, "divingLog = null");
         }
 
+        // 編集ボタン押下
         ImageButton editButton = view.findViewById(R.id.list_button_edit);
-        editButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "編集ボタン押下");
-
-                Intent intent = new Intent(context, LogActivity.class);
-                intent.putExtra(LogActivity.MODE_KEY, LogActivity.Mode.EDIT_MOOD.value);
-                intent.putExtra(LogActivity.TABLE_KEY, divingLog);
-                context.startActivity(intent);
-            }
-        });
-
-//        // 削除ボタン押下時の設定
-//        ImageButton deleteButton = view.findViewById(R.id.list_button_delete);
-//        deleteButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Log.d(TAG, "削除ボタン押下");
-//                Activity tmpActivity = (Activity) context;
-//                FragmentManager fragmentManager = tmpActivity.getFragmentManager();
-//                DeleteDialogFragment deleteDialogFragment = DeleteDialogFragment.newInstance(divingLog);
-//                deleteDialogFragment.show(fragmentManager, null);
-//            }
-//        });
+        editButton.setTag(divingLog);
 
         return view;
     }

@@ -82,6 +82,7 @@
         android:layout_marginEnd="20dp"
         android:background="@null"
         android:contentDescription="@string/content_description_edit"
+        android:onClick="onListEditButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -93,14 +94,15 @@
     <!--        android:id="@+id/list_button_delete"-->
     <!--        android:layout_width="wrap_content"-->
     <!--        android:layout_height="wrap_content"-->
-    <!--        android:background="@null"-->
     <!--        android:layout_marginEnd="20dp"-->
+    <!--        android:background="@null"-->
+    <!--        android:contentDescription="@string/content_description_delete"-->
     <!--        app:layout_constraintBottom_toBottomOf="parent"-->
     <!--        app:layout_constraintEnd_toEndOf="parent"-->
     <!--        app:layout_constraintTop_toTopOf="parent"-->
     <!--        app:srcCompat="@android:drawable/ic_menu_delete"-->
     <!--        tools:layout_editor_absoluteX="45dp"-->
     <!--        tools:layout_editor_absoluteY="10dp"-->
-    <!--        android:contentDescription="@string/content_description_delete" />-->
+    <!--        android:onClick="onListDeleteButton"/>-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

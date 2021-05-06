@@ -1,24 +1,26 @@
 package com.ojtapp.divinglog.view.main;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Intent;
 import android.os.Bundle;
-
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.ojtapp.divinglog.R;
+import com.ojtapp.divinglog.appif.DivingLog;
 import com.ojtapp.divinglog.util.SharedPreferencesUtil;
-import com.ojtapp.divinglog.view.detail.LogActivity;
+import com.ojtapp.divinglog.view.detail.LogAddFragment;
+import com.ojtapp.divinglog.view.detail.LogDetailFragment;
+import com.ojtapp.divinglog.view.detail.LogEditFragment;
 import com.ojtapp.divinglog.view.dialog.SortDialogFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LogFragment.OnListItemListener, LogDetailFragment.OnDetailFragmentEditButtonListener {
     /**
      * クラス名
      */
@@ -32,20 +34,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        sharedPreferencesUtil = new SharedPreferencesUtil(getApplicationContext(),SharedPreferencesUtil.FILE_NAME_SORT);
+        sharedPreferencesUtil = new SharedPreferencesUtil(getApplicationContext(), SharedPreferencesUtil.FILE_NAME_SORT);
 
         // アクションボタンとViewの紐づけ
         FloatingActionButton addButton = findViewById(R.id.button_add);
         // 追加ボタンがクリックされた時の動作
-        addButton.setOnClickListener(new View.OnClickListener(){
+        addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "追加ボタン押下");
-
-                // TaskActivityに「追加」モードの情報を渡す
-                Intent intent = new Intent(MainActivity.this, LogActivity.class);
-                intent.putExtra(LogActivity.MODE_KEY, LogActivity.Mode.ADD_MODE.value);
-                startActivity(intent);
+                LogAddFragment fragment = (LogAddFragment) LogAddFragment.newInstance();
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
             }
         });
 
@@ -58,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
      * {@inheritDoc}
      */
     @Override
-    public boolean onCreateOptionsMenu(Menu menu){
+    public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
         return true;
@@ -69,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
      * {@inheritDoc}
      */
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem menuItem){
+    public boolean onOptionsItemSelected(@NonNull MenuItem menuItem) {
         int memorySortMode;
         memorySortMode = sharedPreferencesUtil.getInt(SharedPreferencesUtil.KEY_SORT_MODE);
 
@@ -86,5 +85,34 @@ public class MainActivity extends AppCompatActivity {
         });
         sortDialogFragment.show(getSupportFragmentManager(), null);
         return super.onOptionsItemSelected(menuItem);
+    }
+
+    @Override
+    public void onAttachFragment(@NonNull Fragment fragment) {
+        if (fragment instanceof LogFragment) {
+            LogFragment logFragment = (LogFragment) fragment;
+            logFragment.setOnListItemListener(this);
+        } else if (fragment instanceof LogDetailFragment) {
+            LogDetailFragment logDetailFragment = (LogDetailFragment) fragment;
+            logDetailFragment.setOnDetailFragmentEditButtonListener(this);
+        }
+    }
+
+    @Override
+    public void OnListItem(DivingLog divingLog) {
+        LogDetailFragment fragment = (LogDetailFragment) LogDetailFragment.newInstance(divingLog);
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
+    }
+
+    @Override
+    public void OnDetailFragmentEditButton(DivingLog divingLog) {
+        LogEditFragment fragment = (LogEditFragment) LogEditFragment.newInstance(divingLog);
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
+    }
+
+    public void onListEditButton(View view) {
+        DivingLog divingLog = (DivingLog) view.getTag();
+        LogEditFragment fragment = (LogEditFragment) LogEditFragment.newInstance(divingLog);
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
     }
 }

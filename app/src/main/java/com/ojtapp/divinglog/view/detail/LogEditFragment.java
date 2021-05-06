@@ -25,6 +25,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.ojtapp.divinglog.LogConstant;
 import com.ojtapp.divinglog.R;
 import com.ojtapp.divinglog.appif.DivingLog;
 import com.ojtapp.divinglog.controller.DeleteAsyncTask;
@@ -392,7 +393,7 @@ public class LogEditFragment extends Fragment {
         int year = date.getYear();
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month, day); // 日付をカレンダークラスにセット
-        SimpleDateFormat dateFormat = new SimpleDateFormat(LogActivity.FORMAT_DATE, Locale.JAPAN);
+        SimpleDateFormat dateFormat = new SimpleDateFormat(LogConstant.FORMAT_DATE, Locale.JAPAN);
         divingLog.setDate(dateFormat.format(calendar.getTime()));   // フォーマットを指定してDivingLogクラスにセット
 
         // 開始時間
@@ -400,7 +401,7 @@ public class LogEditFragment extends Fragment {
         int minuteStart = timeStart.getMinute();
         calendar.set(Calendar.HOUR, hourStart);
         calendar.set(Calendar.MINUTE, minuteStart);
-        SimpleDateFormat timeFormat = new SimpleDateFormat(LogActivity.FORMAT_TIME, Locale.JAPAN);
+        SimpleDateFormat timeFormat = new SimpleDateFormat(LogConstant.FORMAT_TIME, Locale.JAPAN);
         divingLog.setTimeStart(timeFormat.format(calendar.getTime()));
 
         // 終了時間

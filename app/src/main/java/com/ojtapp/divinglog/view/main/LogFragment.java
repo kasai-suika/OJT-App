@@ -1,7 +1,6 @@
 package com.ojtapp.divinglog.view.main;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,7 +18,6 @@ import com.ojtapp.divinglog.SortMenu;
 import com.ojtapp.divinglog.appif.DivingLog;
 import com.ojtapp.divinglog.controller.DisplayAsyncTask;
 import com.ojtapp.divinglog.util.SharedPreferencesUtil;
-import com.ojtapp.divinglog.view.detail.LogActivity;
 
 import java.util.List;
 
@@ -30,6 +28,7 @@ public class LogFragment extends Fragment {
     private static final String TAG = LogFragment.class.getSimpleName();
     private ListView listView;
     private LogAdapter logAdapter;
+    private OnListItemListener callback;
 
     LogFragment() {
     }
@@ -70,14 +69,9 @@ public class LogFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d(TAG, "onItemClick");
                 DivingLog divingLog = (DivingLog) parent.getItemAtPosition(position);
-
-                Intent intent = new Intent(getContext(), LogActivity.class);
-                intent.putExtra(LogActivity.MODE_KEY, LogActivity.Mode.DETAIL_MOOD.value);
-                intent.putExtra(LogActivity.TABLE_KEY, divingLog);
-                startActivity(intent);
+                callback.OnListItem(divingLog);
             }
         });
-
         // データを取得し、画面を更新処理
         refreshView();
     }
@@ -110,5 +104,13 @@ public class LogFragment extends Fragment {
 
         // 非同期処理のメソッドに移動
         displayAsyncTask.execute(0);
+    }
+
+    public void setOnListItemListener(OnListItemListener callback) {
+        this.callback = callback;
+    }
+
+    public interface OnListItemListener {
+        void OnListItem(DivingLog divingLog);
     }
 }

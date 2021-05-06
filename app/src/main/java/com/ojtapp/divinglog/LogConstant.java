@@ -31,4 +31,12 @@ public class LogConstant {
      * 時間フォーマット
      */
     public static final String FORMAT_TIME = "HH:mm";
+    /**
+     * 削除確認ダイアログのタイトル
+     */
+    public static final String TITLE_DELETE_DIALOG = "削除確認";
+    /**
+     * 削除確認ダイアログのメッセージ
+     */
+    public static final String MESSAGE_DELETE_DIALOG = "削除してもよろしいですか？";
 }

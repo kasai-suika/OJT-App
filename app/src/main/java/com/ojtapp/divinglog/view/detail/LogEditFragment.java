@@ -30,7 +30,7 @@ import com.ojtapp.divinglog.R;
 import com.ojtapp.divinglog.appif.DivingLog;
 import com.ojtapp.divinglog.controller.DeleteAsyncTask;
 import com.ojtapp.divinglog.controller.UpdateAsyncTask;
-import com.ojtapp.divinglog.view.dialog.DeleteDialogFragment;
+import com.ojtapp.divinglog.view.dialog.DialogFragment;
 import com.ojtapp.divinglog.view.main.MainActivity;
 
 import java.io.FileDescriptor;
@@ -182,8 +182,10 @@ public class LogEditFragment extends Fragment {
                     return;
                 }
                 FragmentManager fragmentManager = activity.getSupportFragmentManager();
-                DeleteDialogFragment deleteDialogFragment = DeleteDialogFragment.newInstance(divingLog);
-                deleteDialogFragment.setOnClickButtonListener(new DeleteDialogFragment.OnClickButtonListener() {
+                DialogFragment deleteDialogFragment = DialogFragment.newInstance(
+                        LogConstant.TITLE_DELETE_DIALOG,
+                        LogConstant.MESSAGE_DELETE_DIALOG);
+                deleteDialogFragment.setOnClickButtonListener(new DialogFragment.OnClickButtonListener() {
                     @Override
                     public void onClickPositiveButton() {
                         DeleteAsyncTask deleteAsyncTask = new DeleteAsyncTask(requireContext(), activity);
@@ -202,17 +204,11 @@ public class LogEditFragment extends Fragment {
                             }
                         });
 
-                        Bundle args = getArguments();
-                        if (null == args) {
-                            Log.e(TAG, "args = null");
-                            return;
-                        }
-
-                        // シリアライズしたDivingLogクラスを格納
-                        final DivingLog divingLog = (DivingLog) args.getSerializable(LOG_KEY);
-
-                        // 非同期処理を実行
                         deleteAsyncTask.execute(divingLog);
+                    }
+
+                    @Override
+                    public void onClickNegativeButton() {
                     }
                 });
                 deleteDialogFragment.show(fragmentManager, null);

@@ -69,7 +69,7 @@ public class LogFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d(TAG, "onItemClick");
                 DivingLog divingLog = (DivingLog) parent.getItemAtPosition(position);
-                callback.OnListItem(divingLog);
+                callback.onListItem(divingLog);
             }
         });
         // データを取得し、画面を更新処理
@@ -111,6 +111,6 @@ public class LogFragment extends Fragment {
     }
 
     public interface OnListItemListener {
-        void OnListItem(DivingLog divingLog);
+        void onListItem(DivingLog divingLog);
     }
 }

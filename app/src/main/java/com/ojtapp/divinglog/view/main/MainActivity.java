@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -99,18 +100,18 @@ public class MainActivity extends AppCompatActivity implements LogFragment.OnLis
     }
 
     @Override
-    public void OnListItem(DivingLog divingLog) {
+    public void onListItem(@Nullable DivingLog divingLog) {
         LogDetailFragment fragment = (LogDetailFragment) LogDetailFragment.newInstance(divingLog);
         getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
     }
 
     @Override
-    public void OnDetailFragmentEditButton(DivingLog divingLog) {
+    public void onDetailFragmentEditButton(@Nullable DivingLog divingLog) {
         LogEditFragment fragment = (LogEditFragment) LogEditFragment.newInstance(divingLog);
         getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
     }
 
-    public void onListEditButton(View view) {
+    public void onListEditButton(@Nullable View view) {
         DivingLog divingLog = (DivingLog) view.getTag();
         LogEditFragment fragment = (LogEditFragment) LogEditFragment.newInstance(divingLog);
         getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();

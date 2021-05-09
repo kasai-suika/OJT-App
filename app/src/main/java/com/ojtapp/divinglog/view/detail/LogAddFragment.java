@@ -61,7 +61,7 @@ public class LogAddFragment extends Fragment {
     private TimePicker timeStart;
     private TimePicker timeEnd;
     private ImageView picture;
-    private Uri uri;
+    private Uri uri = null;
 
     /**
      * デフォルトコンストラクタ
@@ -313,7 +313,9 @@ public class LogAddFragment extends Fragment {
         divingLog.setTimeDive(timeFormat.format(calendar.getTimeInMillis()));
 
         // 写真
-        divingLog.setPictureUri(uri.toString());
+        if (null != uri) {
+            divingLog.setPictureUri(uri.toString());
+        }
     }
 
     /**

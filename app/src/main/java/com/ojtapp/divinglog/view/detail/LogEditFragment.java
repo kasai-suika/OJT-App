@@ -90,7 +90,7 @@ public class LogEditFragment extends Fragment {
      *
      * @return フラグメント
      */
-    public static Fragment newInstance(DivingLog divingLog) {
+    public static Fragment newInstance(@NonNull DivingLog divingLog) {
         android.util.Log.d(TAG, "newInstance()");
 
         LogEditFragment fragment = new LogEditFragment();
@@ -324,9 +324,12 @@ public class LogEditFragment extends Fragment {
         timeEnd.setMinute(cal.get(Calendar.MINUTE));
 
         try {
-            uri = Uri.parse(divingLog.getPictureUri());
-            Bitmap bitmap = getBitmapFromUri(uri);
-            picture.setImageBitmap(bitmap);
+            String pictureUri = divingLog.getPictureUri();
+            if (null != pictureUri) {
+                uri = Uri.parse(pictureUri);
+                Bitmap bitmap = getBitmapFromUri(uri);
+                picture.setImageBitmap(bitmap);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -427,6 +430,8 @@ public class LogEditFragment extends Fragment {
         divingLog.setTimeDive(timeFormat.format(calendar.getTimeInMillis()));
 
         // 写真
-        divingLog.setPictureUri(uri.toString());
+        if (null != uri) {
+            divingLog.setPictureUri(uri.toString());
+        }
     }
 }

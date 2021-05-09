@@ -56,7 +56,7 @@ public class LogDetailFragment extends Fragment {
      *
      * @return フラグメント
      */
-    public static Fragment newInstance(DivingLog divingLog) {
+    public static Fragment newInstance(@NonNull DivingLog divingLog) {
         android.util.Log.d(TAG, "newInstance()");
 
         LogDetailFragment fragment = new LogDetailFragment();
@@ -92,7 +92,7 @@ public class LogDetailFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "編集ボタン押下");
-                callback.OnDetailFragmentEditButton(divingLog);
+                callback.onDetailFragmentEditButton(divingLog);
             }
         });
 
@@ -176,8 +176,11 @@ public class LogDetailFragment extends Fragment {
             memo.setText(divingLog.getMemo());
 
             try {
-                Bitmap bitmap = getBitmapFromUri(Uri.parse(divingLog.getPictureUri()));
-                picture.setImageBitmap(bitmap);
+                String pictureUri = divingLog.getPictureUri();
+                if (null != pictureUri) {
+                    Bitmap bitmap = getBitmapFromUri(Uri.parse(pictureUri));
+                    picture.setImageBitmap(bitmap);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -218,11 +221,11 @@ public class LogDetailFragment extends Fragment {
         }
     }
 
-    public void setOnDetailFragmentEditButtonListener(OnDetailFragmentEditButtonListener callback) {
+    public void setOnDetailFragmentEditButtonListener(@Nullable OnDetailFragmentEditButtonListener callback) {
         this.callback = callback;
     }
 
     public interface OnDetailFragmentEditButtonListener {
-        void OnDetailFragmentEditButton(DivingLog divingLog);
+        void onDetailFragmentEditButton(DivingLog divingLog);
     }
 }

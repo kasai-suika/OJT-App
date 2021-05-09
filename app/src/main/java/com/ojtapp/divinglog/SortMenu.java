@@ -13,9 +13,15 @@ import java.util.List;
 
 public class SortMenu {
     private static final String TAG = SortMenu.class.getSimpleName();
+    private static final int INDEX_SORTMODE_MAX_VALUE = 1;
+    private static final int INDEX_SORTMODE_MIN_VALUE = 1;
 
     public static void sortDivingLog(@NonNull List<DivingLog> divingLogList, int sortModeValue) {
         Log.d(TAG, "sortDivingLog");
+        if ((INDEX_SORTMODE_MAX_VALUE < sortModeValue) || (INDEX_SORTMODE_MIN_VALUE > sortModeValue)) {
+            throw new IllegalArgumentException("引数'sortModeValue'の値が不適切です");
+        }
+
         SortModes sortMode = SortModes.values()[sortModeValue];
 
         if (SortModes.UP_MODE == sortMode) {

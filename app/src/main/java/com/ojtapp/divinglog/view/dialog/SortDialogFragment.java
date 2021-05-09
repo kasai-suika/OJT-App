@@ -68,7 +68,7 @@ public class SortDialogFragment extends DialogFragment {
         final int[] sortModePosition = {args.getInt(KEY_SORT_MODE_POSITION)};
 
         return new AlertDialog.Builder(getContext())
-                .setSingleChoiceItems(SortMenu.SortModes.getSortModesStr(), sortModePosition[0], new DialogInterface.OnClickListener() {
+                .setSingleChoiceItems(SortMenu.SortModes.getSortModesStrArray(), sortModePosition[0], new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         sortModePosition[0] = which;

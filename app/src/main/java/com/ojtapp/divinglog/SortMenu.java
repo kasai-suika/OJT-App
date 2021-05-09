@@ -28,7 +28,7 @@ public class SortMenu {
             Collections.sort(divingLogList, new Comparator<DivingLog>() {
                 @Override
                 public int compare(DivingLog o1, DivingLog o2) {
-                    Log.d(TAG, SortModes.UP_MODE.value);
+                    Log.d(TAG, SortModes.UP_MODE.str);
                     return o1.getDivingNumber() - o2.getDivingNumber();
                 }
             });
@@ -36,7 +36,7 @@ public class SortMenu {
             Collections.sort(divingLogList, new Comparator<DivingLog>() {
                 @Override
                 public int compare(DivingLog o1, DivingLog o2) {
-                    Log.d(TAG, SortModes.DOWN_MODE.value);
+                    Log.d(TAG, SortModes.DOWN_MODE.str);
                     return o2.getDivingNumber() - o1.getDivingNumber();
                 }
             });
@@ -49,18 +49,19 @@ public class SortMenu {
         UP_MODE("No（昇順）"),
         DOWN_MODE("No（降順）");
 
-        public final String value;
+        public final String str;
 
         SortModes(@NonNull String value) {
-            this.value = value;
+            this.str = value;
         }
 
-        public static String[] getSortModesStr() {
+        public static String[] getSortModesStrArray() {
             List<String> list = new ArrayList<>();
-            for (SortModes mode : values()) {          // 全ての列挙子を順に比較
-                list.add(mode.value);
+            for (SortModes mode : values()) {
+                list.add(mode.str);
             }
-            return list.toArray(new String[0]);
+            String[] strArray = new String[list.size()];
+            return list.toArray(strArray);
         }
     }
 }

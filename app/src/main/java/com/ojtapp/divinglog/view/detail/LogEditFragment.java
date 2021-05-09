@@ -35,6 +35,7 @@ import com.ojtapp.divinglog.view.main.MainActivity;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -124,7 +125,11 @@ public class LogEditFragment extends Fragment {
 
         // 初期データのセット
         if (null != divingLog) {
-            setDefaultDate(divingLog);
+            try {
+                setDefaultDate(divingLog);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         } else {
             Log.e(TAG, "divingLog = null");
         }
@@ -288,7 +293,7 @@ public class LogEditFragment extends Fragment {
      *
      * @param divingLog Logデータ
      */
-    private void setDefaultDate(@NonNull DivingLog divingLog) {
+    private void setDefaultDate(@NonNull DivingLog divingLog) throws ParseException {
         diveNumber.setText(String.valueOf(divingLog.getDivingNumber()));
         place.setText(divingLog.getPlace());
         point.setText(divingLog.getPoint());
@@ -304,22 +309,23 @@ public class LogEditFragment extends Fragment {
         memberNavigate.setText(divingLog.getMemberNavigate());
         memo.setText(divingLog.getMemo());
 
-        String[] diveDay = divingLog.getDate().split(SEPARATE_DAY, 0);
-        int year = Integer.parseInt(diveDay[0]);
-        int month = (Integer.parseInt(diveDay[1]) - 1);
-        int day = Integer.parseInt(diveDay[2]);
-        date.updateDate(year, month, day);
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat(LogConstant.FORMAT_DATE, Locale.JAPAN);
+        cal.setTime(dateFormat.parse(divingLog.getDate()));
+        date.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
 
-        String[] startTime = divingLog.getTimeStart().split(SEPARATE_TIME, 0);
-        timeStart.setHour(Integer.parseInt(startTime[0]));
-        timeStart.setMinute(Integer.parseInt(startTime[1]));
+        SimpleDateFormat timeFormat = new SimpleDateFormat(LogConstant.FORMAT_TIME, Locale.JAPAN);
+        cal.setTime(timeFormat.parse(divingLog.getTimeStart()));
+        timeStart.setHour(cal.get(Calendar.HOUR_OF_DAY));
+        timeStart.setMinute(cal.get(Calendar.MINUTE));
 
-        String[] endTime = divingLog.getTimeEnd().split(SEPARATE_TIME, 0);
-        timeEnd.setHour(Integer.parseInt(endTime[0]));
-        timeEnd.setMinute(Integer.parseInt(endTime[1]));
+        cal.setTime(timeFormat.parse(divingLog.getTimeEnd()));
+        timeEnd.setHour(cal.get(Calendar.HOUR_OF_DAY));
+        timeEnd.setMinute(cal.get(Calendar.MINUTE));
 
         try {
-            Bitmap bitmap = getBitmapFromUri(Uri.parse(divingLog.getPictureUri()));
+            uri = Uri.parse(divingLog.getPictureUri());
+            Bitmap bitmap = getBitmapFromUri(uri);
             picture.setImageBitmap(bitmap);
         } catch (IOException e) {
             e.printStackTrace();
@@ -395,7 +401,7 @@ public class LogEditFragment extends Fragment {
         // 開始時間
         int hourStart = timeStart.getHour();
         int minuteStart = timeStart.getMinute();
-        calendar.set(Calendar.HOUR, hourStart);
+        calendar.set(Calendar.HOUR_OF_DAY, hourStart);
         calendar.set(Calendar.MINUTE, minuteStart);
         SimpleDateFormat timeFormat = new SimpleDateFormat(LogConstant.FORMAT_TIME, Locale.JAPAN);
         divingLog.setTimeStart(timeFormat.format(calendar.getTime()));
@@ -403,7 +409,7 @@ public class LogEditFragment extends Fragment {
         // 終了時間
         int hourEnd = timeEnd.getHour();
         int minuteEnd = timeEnd.getMinute();
-        calendar.set(Calendar.HOUR, hourEnd);
+        calendar.set(Calendar.HOUR_OF_DAY, hourEnd);
         calendar.set(Calendar.MINUTE, minuteEnd);
         divingLog.setTimeEnd(timeFormat.format(calendar.getTime()));
 

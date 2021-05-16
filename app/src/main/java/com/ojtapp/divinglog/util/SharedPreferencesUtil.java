@@ -45,7 +45,7 @@ public class SharedPreferencesUtil {
      * @param key 　キー
      * @return keyに保存されていた値
      */
-    public int getInt(String key) {
+    public int getSortMode(String key) {
         return sharedPreferences.getInt(key, SORT_MODE_DEFAULT_POSITION);
     }
 }

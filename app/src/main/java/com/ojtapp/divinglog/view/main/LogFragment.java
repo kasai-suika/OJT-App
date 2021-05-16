@@ -88,7 +88,7 @@ public class LogFragment extends Fragment {
             public void onSuccess(List<DivingLog> logList) {
                 Log.d(TAG, "onDisplay");
                 // 記憶されたソートモードを取得
-                int memorySortMode = MainActivity.sharedPreferencesUtil.getInt(SharedPreferencesUtil.KEY_SORT_MODE);
+                int memorySortMode = MainActivity.sharedPreferencesUtil.getSortMode(SharedPreferencesUtil.KEY_SORT_MODE);
                 SortMenu.sortDivingLog(logList, memorySortMode);
 
                 // Adapterの設定

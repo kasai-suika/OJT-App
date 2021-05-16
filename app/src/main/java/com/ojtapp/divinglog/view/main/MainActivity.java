@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements LogFragment.OnLis
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem menuItem) {
         int memorySortMode;
-        memorySortMode = sharedPreferencesUtil.getInt(SharedPreferencesUtil.KEY_SORT_MODE);
+        memorySortMode = sharedPreferencesUtil.getSortMode(SharedPreferencesUtil.KEY_SORT_MODE);
 
         SortDialogFragment sortDialogFragment = SortDialogFragment.newInstance(memorySortMode);
 

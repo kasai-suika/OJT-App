@@ -1,5 +1,7 @@
 package com.ojtapp.divinglog.view.main;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -8,7 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -27,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements LogFragment.OnLis
      */
     private static final String TAG = MainActivity.class.getSimpleName();
     private LogFragment targetFragment;
-    public static SharedPreferencesUtil sharedPreferencesUtil;
+    public static SharedPreferences sharedPreferences;
     public static final int RESULT_PICK_IMAGEFILE = 1000;
 
 
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements LogFragment.OnLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        sharedPreferencesUtil = new SharedPreferencesUtil(getApplicationContext(), SharedPreferencesUtil.FILE_NAME_SORT);
+        sharedPreferences = getApplicationContext().getSharedPreferences(SharedPreferencesUtil.FILE_NAME_SORT, Context.MODE_PRIVATE);
 
         // アクションボタンとViewの紐づけ
         FloatingActionButton addButton = findViewById(R.id.button_add);
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements LogFragment.OnLis
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem menuItem) {
         int memorySortMode;
-        memorySortMode = sharedPreferencesUtil.getSortMode(SharedPreferencesUtil.KEY_SORT_MODE);
+        memorySortMode = SharedPreferencesUtil.getSortMode(SharedPreferencesUtil.KEY_SORT_MODE, sharedPreferences);
 
         SortDialogFragment sortDialogFragment = SortDialogFragment.newInstance(memorySortMode);
 
@@ -80,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements LogFragment.OnLis
             public void onSortDialog(int position) {
                 Log.d(TAG, "SortDialogCallback");
                 // 選択されたソートモードを記憶
-                sharedPreferencesUtil.setInt(SharedPreferencesUtil.KEY_SORT_MODE, position);
+                SharedPreferencesUtil.setInt(SharedPreferencesUtil.KEY_SORT_MODE, position, sharedPreferences);
                 targetFragment.refreshView();
             }
         });
@@ -100,18 +101,18 @@ public class MainActivity extends AppCompatActivity implements LogFragment.OnLis
     }
 
     @Override
-    public void onListItem(@Nullable DivingLog divingLog) {
+    public void onListItem(@NonNull DivingLog divingLog) {
         LogDetailFragment fragment = (LogDetailFragment) LogDetailFragment.newInstance(divingLog);
         getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
     }
 
     @Override
-    public void onDetailFragmentEditButton(@Nullable DivingLog divingLog) {
+    public void onDetailFragmentEditButton(@NonNull DivingLog divingLog) {
         LogEditFragment fragment = (LogEditFragment) LogEditFragment.newInstance(divingLog);
         getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
     }
 
-    public void onListEditButton(@Nullable View view) {
+    public void onListEditButton(@NonNull View view) {
         DivingLog divingLog = (DivingLog) view.getTag();
         LogEditFragment fragment = (LogEditFragment) LogEditFragment.newInstance(divingLog);
         getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();

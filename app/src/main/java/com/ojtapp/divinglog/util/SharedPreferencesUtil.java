@@ -1,6 +1,5 @@
 package com.ojtapp.divinglog.util;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
@@ -19,12 +18,7 @@ public class SharedPreferencesUtil {
      */
     public static final String KEY_SORT_MODE = "KEY_SORT_MODE";
 
-
-    @NonNull
-    private final SharedPreferences sharedPreferences;
-
-    public SharedPreferencesUtil(@NonNull Context context, @NonNull String fileName) {
-        this.sharedPreferences = context.getSharedPreferences(fileName, Context.MODE_PRIVATE);
+    public SharedPreferencesUtil() {
     }
 
     /**
@@ -33,7 +27,7 @@ public class SharedPreferencesUtil {
      * @param key   　キー
      * @param value 　記憶する値
      */
-    public void setInt(@NonNull String key, int value) {
+    public static void setInt(@NonNull String key, int value, SharedPreferences sharedPreferences) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(key, value);
         editor.apply();
@@ -45,7 +39,7 @@ public class SharedPreferencesUtil {
      * @param key 　キー
      * @return keyに保存されていた値
      */
-    public int getSortMode(String key) {
+    public static int getSortMode(String key, SharedPreferences sharedPreferences) {
         return sharedPreferences.getInt(key, SORT_MODE_DEFAULT_POSITION);
     }
 }

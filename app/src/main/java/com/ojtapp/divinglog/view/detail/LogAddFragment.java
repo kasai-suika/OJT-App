@@ -1,13 +1,10 @@
 package com.ojtapp.divinglog.view.detail;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,9 +24,9 @@ import com.ojtapp.divinglog.LogConstant;
 import com.ojtapp.divinglog.R;
 import com.ojtapp.divinglog.appif.DivingLog;
 import com.ojtapp.divinglog.controller.RegisterAsyncTask;
+import com.ojtapp.divinglog.util.ConversionUtil;
 import com.ojtapp.divinglog.view.main.MainActivity;
 
-import java.io.FileDescriptor;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -40,8 +37,6 @@ public class LogAddFragment extends Fragment {
      * クラスの名前
      */
     private static final String TAG = LogAddFragment.class.getSimpleName();
-
-    public static final int NO_DATA = -1;
 
     private EditText diveNumber;    // TODO:変数まみれはみにくい。リストやenumでまとめられないか。（ライフサイクル艇にはonCreatedViewで再設定されるからＯＫ？）
     private EditText place;
@@ -120,7 +115,7 @@ public class LogAddFragment extends Fragment {
                 //---------DivingLogクラスにセット------------
                 DivingLog divingLog = new DivingLog();
                 // データをDivingLogクラスにセット
-                setDateToDivingLog(divingLog);
+                setDataToDivingLog(divingLog);
 
                 // -----【DB】保存処理--------------
                 RegisterAsyncTask registerAsyncTask = new RegisterAsyncTask(requireContext());
@@ -159,34 +154,15 @@ public class LogAddFragment extends Fragment {
                 final int takeFlags = resultData.getFlags()
                         & (Intent.FLAG_GRANT_READ_URI_PERMISSION
                         | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                getContext().getContentResolver().takePersistableUriPermission(uri, takeFlags);
+                requireContext().getContentResolver().takePersistableUriPermission(uri, takeFlags);
                 try {
-                    Bitmap bmp = getBitmapFromUri(uri);
+                    Bitmap bmp = ConversionUtil.getBitmapFromUri(uri, requireContext());
                     picture.setImageBitmap(bmp);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
-    }
-
-    /**
-     * Uri型をBitmap型に変換する
-     *
-     * @param uri 選択した写真のuri
-     * @return 引数のuriをBitmapに変換したもの
-     * @throws IOException 例外
-     */
-    @NonNull
-    private Bitmap getBitmapFromUri(@NonNull Uri uri) throws IOException {
-        Context context = getContext();
-        assert context != null;
-        ParcelFileDescriptor parcelFileDescriptor =
-                context.getContentResolver().openFileDescriptor(uri, "r");
-        FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-        Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
-        parcelFileDescriptor.close();
-        return image;
     }
 
     /**
@@ -220,7 +196,7 @@ public class LogAddFragment extends Fragment {
      *
      * @param divingLog 　セットするDivingLogクラス
      */
-    private void setDateToDivingLog(@NonNull DivingLog divingLog) {
+    private void setDataToDivingLog(@NonNull DivingLog divingLog) {
         // 本数
         divingLog.setDiveNumber(Integer.parseInt(diveNumber.getText().toString()));
 
@@ -231,22 +207,22 @@ public class LogAddFragment extends Fragment {
         divingLog.setPoint(point.getText().toString());
 
         // 深度（最大）
-        divingLog.setDepthMax(getIntData(depthMax.getText().toString()));
+        divingLog.setDepthMax(ConversionUtil.getIntFromStr(depthMax.getText().toString()));
 
         // 深度（平均）
-        divingLog.setDepthAve(getIntData(depthAve.getText().toString()));
+        divingLog.setDepthAve(ConversionUtil.getIntFromStr(depthAve.getText().toString()));
 
         // 残圧（開始時）
-        int airStartInt = getIntData(airStart.getText().toString());
+        int airStartInt = ConversionUtil.getIntFromStr(airStart.getText().toString());
         divingLog.setAirStart(airStartInt);
 
         // 残圧（終了時）
-        int airEndInt = getIntData(airEnd.getText().toString());
+        int airEndInt = ConversionUtil.getIntFromStr(airEnd.getText().toString());
         divingLog.setAirEnd(airEndInt);
 
         // 使用した空気
-        if ((NO_DATA == airStartInt) || (NO_DATA == airEndInt)) {
-            divingLog.setAirDive(NO_DATA);
+        if ((ConversionUtil.NO_DATA == airStartInt) || (ConversionUtil.NO_DATA == airEndInt)) {
+            divingLog.setAirDive(ConversionUtil.NO_DATA);
         } else {
             int airDive = airStartInt - airEndInt;
             divingLog.setAirDive(airDive);
@@ -256,13 +232,13 @@ public class LogAddFragment extends Fragment {
         divingLog.setWeather(weather.getText().toString());
 
         // 気温
-        divingLog.setTemp(getIntData(temp.getText().toString()));
+        divingLog.setTemp(ConversionUtil.getIntFromStr(temp.getText().toString()));
 
         // 水温
-        divingLog.setTempWater(getIntData(tempWater.getText().toString()));
+        divingLog.setTempWater(ConversionUtil.getIntFromStr(tempWater.getText().toString()));
 
         // 透明度
-        divingLog.setVisibility(getIntData(visibility.getText().toString()));
+        divingLog.setVisibility(ConversionUtil.getIntFromStr(visibility.getText().toString()));
 
         // メンバー
         divingLog.setMember(member.getText().toString());
@@ -315,21 +291,6 @@ public class LogAddFragment extends Fragment {
         // 写真
         if (null != uri) {
             divingLog.setPictureUri(uri.toString());
-        }
-    }
-
-    /**
-     * String型をint型に変換する。
-     * データがない場合は-1を返す。
-     *
-     * @param strData 　String型のデータ
-     * @return int型に変換したデータ
-     */
-    public static int getIntData(@NonNull String strData) {
-        if (0 == strData.length()) {
-            return NO_DATA;
-        } else {
-            return Integer.parseInt(strData);
         }
     }
 }

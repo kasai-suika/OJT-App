@@ -1,12 +1,9 @@
 package com.ojtapp.divinglog.view.detail;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,10 +22,10 @@ import com.ojtapp.divinglog.LogConstant;
 import com.ojtapp.divinglog.R;
 import com.ojtapp.divinglog.appif.DivingLog;
 import com.ojtapp.divinglog.controller.DeleteAsyncTask;
+import com.ojtapp.divinglog.util.ConversionUtil;
 import com.ojtapp.divinglog.view.dialog.DialogFragment;
 import com.ojtapp.divinglog.view.main.MainActivity;
 
-import java.io.FileDescriptor;
 import java.io.IOException;
 
 public class LogDetailFragment extends Fragment {
@@ -164,13 +161,13 @@ public class LogDetailFragment extends Fragment {
             point.setText(divingLog.getPoint());
             date.setText(divingLog.getDate());
             time.setText(divingLog.getTimeDive());
-            depthMax.setText(createStringData(divingLog.getDepthMax()));
-            depthAve.setText(createStringData(divingLog.getDepthAve()));
-            air.setText(createStringData(divingLog.getAirDive()));
+            depthMax.setText(ConversionUtil.getStrFromInt(divingLog.getDepthMax()));
+            depthAve.setText(ConversionUtil.getStrFromInt(divingLog.getDepthAve()));
+            air.setText(ConversionUtil.getStrFromInt(divingLog.getAirDive()));
             weather.setText(divingLog.getWeather());
-            temp.setText(createStringData(divingLog.getTemp()));
-            tempWater.setText(createStringData(divingLog.getTempWater()));
-            visibility.setText(createStringData(divingLog.getVisibility()));
+            temp.setText(ConversionUtil.getStrFromInt(divingLog.getTemp()));
+            tempWater.setText(ConversionUtil.getStrFromInt(divingLog.getTempWater()));
+            visibility.setText(ConversionUtil.getStrFromInt(divingLog.getVisibility()));
             member.setText(divingLog.getMember());
             navi.setText(divingLog.getMemberNavigate());
             memo.setText(divingLog.getMemo());
@@ -178,46 +175,12 @@ public class LogDetailFragment extends Fragment {
             try {
                 String pictureUri = divingLog.getPictureUri();
                 if (null != pictureUri) {
-                    Bitmap bitmap = getBitmapFromUri(Uri.parse(pictureUri));
+                    Bitmap bitmap = ConversionUtil.getBitmapFromUri(Uri.parse(pictureUri), requireContext());
                     picture.setImageBitmap(bitmap);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    /**
-     * Uri型をBitmap型に変換する
-     *
-     * @param uri 選択した写真のuri
-     * @return 引数のuriをBitmapに変換したもの
-     * @throws IOException 例外
-     */
-    @NonNull
-    private Bitmap getBitmapFromUri(@NonNull Uri uri) throws IOException {
-        Context context = getContext();
-        assert context != null;
-        ParcelFileDescriptor parcelFileDescriptor =
-                context.getContentResolver().openFileDescriptor(uri, "r");
-        FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-        Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
-        parcelFileDescriptor.close();
-        return image;
-    }
-
-    /**
-     * int型をString型に変換する。
-     * データがない場合は空文字を返す。
-     *
-     * @param intData 　int型のデータ
-     * @return String型に変換したデータ
-     */
-    public static String createStringData(int intData) {
-        if (LogAddFragment.NO_DATA == intData) {
-            return "";
-        } else {
-            return String.valueOf(intData);
         }
     }
 

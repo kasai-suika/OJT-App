@@ -4,10 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,14 +28,15 @@ import com.ojtapp.divinglog.R;
 import com.ojtapp.divinglog.appif.DivingLog;
 import com.ojtapp.divinglog.controller.DeleteAsyncTask;
 import com.ojtapp.divinglog.controller.UpdateAsyncTask;
+import com.ojtapp.divinglog.util.ConversionUtil;
 import com.ojtapp.divinglog.view.dialog.DialogFragment;
 import com.ojtapp.divinglog.view.main.MainActivity;
 
-import java.io.FileDescriptor;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public class LogEditFragment extends Fragment {
@@ -49,15 +48,6 @@ public class LogEditFragment extends Fragment {
      * DivingLogオブジェクト受け取り用キー
      */
     private static final String LOG_KEY = "DIVE_LOG";
-    /**
-     * 日付を区切る記号 "/"
-     */
-    private static final String SEPARATE_DAY = "/";
-    /**
-     * 時間を区切る記号 ":"
-     */
-    private static final String SEPARATE_TIME = ":";
-
 
     private EditText diveNumber;
     private EditText place;
@@ -194,7 +184,6 @@ public class LogEditFragment extends Fragment {
                     @Override
                     public void onClickPositiveButton() {
                         DeleteAsyncTask deleteAsyncTask = new DeleteAsyncTask(requireContext(), activity);
-
                         deleteAsyncTask.setDeleteCallback(new DeleteAsyncTask.DeleteCallback() {
                             @Override
                             public void onSuccess() {
@@ -208,7 +197,6 @@ public class LogEditFragment extends Fragment {
                                 Log.e(TAG, "正常に削除されませんでした");
                             }
                         });
-
                         deleteAsyncTask.execute(divingLog);
                     }
 
@@ -219,25 +207,6 @@ public class LogEditFragment extends Fragment {
                 deleteDialogFragment.show(fragmentManager, null);
             }
         });
-    }
-
-    /**
-     * Uri型をBitmap型に変換する
-     *
-     * @param uri 選択した写真のuri
-     * @return 引数のuriをBitmapに変換したもの
-     * @throws IOException 例外
-     */
-    @NonNull
-    private Bitmap getBitmapFromUri(@NonNull Uri uri) throws IOException {
-        Context context = getContext();
-        assert context != null;
-        ParcelFileDescriptor parcelFileDescriptor =
-                context.getContentResolver().openFileDescriptor(uri, "r");
-        FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-        Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
-        parcelFileDescriptor.close();
-        return image;
     }
 
     @Override
@@ -253,7 +222,7 @@ public class LogEditFragment extends Fragment {
                         | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 context.getContentResolver().takePersistableUriPermission(uri, takeFlags);
                 try {
-                    Bitmap bmp = getBitmapFromUri(uri);
+                    Bitmap bmp = ConversionUtil.getBitmapFromUri(uri, context);
                     picture.setImageBitmap(bmp);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -297,37 +266,46 @@ public class LogEditFragment extends Fragment {
         diveNumber.setText(String.valueOf(divingLog.getDivingNumber()));
         place.setText(divingLog.getPlace());
         point.setText(divingLog.getPoint());
-        depthMax.setText(LogDetailFragment.createStringData(divingLog.getDepthMax()));
-        depthAve.setText(LogDetailFragment.createStringData(divingLog.getDepthAve()));
-        airStart.setText(LogDetailFragment.createStringData(divingLog.getAirStart()));
-        airEnd.setText(LogDetailFragment.createStringData(divingLog.getAirEnd()));
+        depthMax.setText(ConversionUtil.getStrFromInt(divingLog.getDepthMax()));
+        depthAve.setText(ConversionUtil.getStrFromInt(divingLog.getDepthAve()));
+        airStart.setText(ConversionUtil.getStrFromInt(divingLog.getAirStart()));
+        airEnd.setText(ConversionUtil.getStrFromInt(divingLog.getAirEnd()));
         weather.setText(divingLog.getWeather());
-        temp.setText(LogDetailFragment.createStringData(divingLog.getTemp()));
-        tempWater.setText(LogDetailFragment.createStringData(divingLog.getTempWater()));
-        visibility.setText(LogDetailFragment.createStringData(divingLog.getVisibility()));
+        temp.setText(ConversionUtil.getStrFromInt(divingLog.getTemp()));
+        tempWater.setText(ConversionUtil.getStrFromInt(divingLog.getTempWater()));
+        visibility.setText(ConversionUtil.getStrFromInt(divingLog.getVisibility()));
         member.setText(divingLog.getMember());
         memberNavigate.setText(divingLog.getMemberNavigate());
         memo.setText(divingLog.getMemo());
 
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat(LogConstant.FORMAT_DATE, Locale.JAPAN);
-        cal.setTime(dateFormat.parse(divingLog.getDate()));
-        date.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+        Date defaultDate = dateFormat.parse(divingLog.getDate());
+        if (null != defaultDate) {
+            cal.setTime(defaultDate);
+            date.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+        }
 
         SimpleDateFormat timeFormat = new SimpleDateFormat(LogConstant.FORMAT_TIME, Locale.JAPAN);
-        cal.setTime(timeFormat.parse(divingLog.getTimeStart()));
-        timeStart.setHour(cal.get(Calendar.HOUR_OF_DAY));
-        timeStart.setMinute(cal.get(Calendar.MINUTE));
+        Date defaultStartTime = timeFormat.parse(divingLog.getTimeStart());
+        if (null != defaultStartTime) {
+            cal.setTime(defaultStartTime);
+            timeStart.setHour(cal.get(Calendar.HOUR_OF_DAY));
+            timeStart.setMinute(cal.get(Calendar.MINUTE));
+        }
 
-        cal.setTime(timeFormat.parse(divingLog.getTimeEnd()));
-        timeEnd.setHour(cal.get(Calendar.HOUR_OF_DAY));
-        timeEnd.setMinute(cal.get(Calendar.MINUTE));
+        Date defaultEndTime = timeFormat.parse(divingLog.getTimeEnd());
+        if (null != defaultEndTime) {
+            cal.setTime(defaultEndTime);
+            timeEnd.setHour(cal.get(Calendar.HOUR_OF_DAY));
+            timeEnd.setMinute(cal.get(Calendar.MINUTE));
+        }
 
         try {
             String pictureUri = divingLog.getPictureUri();
             if (null != pictureUri) {
                 uri = Uri.parse(pictureUri);
-                Bitmap bitmap = getBitmapFromUri(uri);
+                Bitmap bitmap = ConversionUtil.getBitmapFromUri(uri, requireContext());
                 picture.setImageBitmap(bitmap);
             }
         } catch (IOException e) {
@@ -350,22 +328,22 @@ public class LogEditFragment extends Fragment {
         divingLog.setPoint(point.getText().toString());
 
         // 深度（最大）
-        divingLog.setDepthMax(LogAddFragment.getIntData(depthMax.getText().toString()));
+        divingLog.setDepthMax(ConversionUtil.getIntFromStr(depthMax.getText().toString()));
 
         // 深度（平均）
-        divingLog.setDepthAve(LogAddFragment.getIntData(depthAve.getText().toString()));
+        divingLog.setDepthAve(ConversionUtil.getIntFromStr(depthAve.getText().toString()));
 
         // 残圧（開始時）
-        int airStartInt = LogAddFragment.getIntData(airStart.getText().toString());
+        int airStartInt = ConversionUtil.getIntFromStr(airStart.getText().toString());
         divingLog.setAirStart(airStartInt);
 
         // 残圧（終了時）
-        int airEndInt = LogAddFragment.getIntData(airEnd.getText().toString());
+        int airEndInt = ConversionUtil.getIntFromStr(airEnd.getText().toString());
         divingLog.setAirEnd(airEndInt);
 
         // 使用した空気
-        if ((LogAddFragment.NO_DATA == airStartInt) || (LogAddFragment.NO_DATA == airEndInt)) {
-            divingLog.setAirDive(LogAddFragment.NO_DATA);
+        if ((ConversionUtil.NO_DATA == airStartInt) || (ConversionUtil.NO_DATA == airEndInt)) {
+            divingLog.setAirDive(ConversionUtil.NO_DATA);
         } else {
             int airDive = airStartInt - airEndInt;
             divingLog.setAirDive(airDive);
@@ -375,13 +353,13 @@ public class LogEditFragment extends Fragment {
         divingLog.setWeather(weather.getText().toString());
 
         // 気温
-        divingLog.setTemp(LogAddFragment.getIntData(temp.getText().toString()));
+        divingLog.setTemp(ConversionUtil.getIntFromStr(temp.getText().toString()));
 
         // 水温
-        divingLog.setTempWater(LogAddFragment.getIntData(tempWater.getText().toString()));
+        divingLog.setTempWater(ConversionUtil.getIntFromStr(tempWater.getText().toString()));
 
         // 透明度
-        divingLog.setVisibility(LogAddFragment.getIntData(visibility.getText().toString()));
+        divingLog.setVisibility(ConversionUtil.getIntFromStr(visibility.getText().toString()));
 
         // メンバー
         divingLog.setMember(member.getText().toString());

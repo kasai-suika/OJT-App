@@ -12,6 +12,9 @@ import androidx.fragment.app.DialogFragment;
 
 import com.ojtapp.divinglog.SortMenu;
 
+import java.util.Date;
+import java.util.Optional;
+
 public class SortDialogFragment extends DialogFragment {
     /**
      * クラス名

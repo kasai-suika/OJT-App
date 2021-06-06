@@ -38,6 +38,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Optional;
 
 public class LogEditFragment extends Fragment {
     /**
@@ -103,7 +104,7 @@ public class LogEditFragment extends Fragment {
 
         Bundle args = getArguments();
         if (null == args) {
-            android.util.Log.e(TAG, "args = null");
+            Log.e(TAG, "args = null");
             return;
         }
 
@@ -280,26 +281,20 @@ public class LogEditFragment extends Fragment {
 
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat(LogConstant.FORMAT_DATE, Locale.JAPAN);
-        Date defaultDate = dateFormat.parse(divingLog.getDate());
-        if (null != defaultDate) {
-            cal.setTime(defaultDate);
-            date.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
-        }
+        Optional<Date> defaultDateOpt = Optional.ofNullable(dateFormat.parse(divingLog.getDate()));
+        defaultDateOpt.ifPresent(cal::setTime);  //TODO ifPresentOrElse
+        date.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
 
         SimpleDateFormat timeFormat = new SimpleDateFormat(LogConstant.FORMAT_TIME, Locale.JAPAN);
-        Date defaultStartTime = timeFormat.parse(divingLog.getTimeStart());
-        if (null != defaultStartTime) {
-            cal.setTime(defaultStartTime);
-            timeStart.setHour(cal.get(Calendar.HOUR_OF_DAY));
-            timeStart.setMinute(cal.get(Calendar.MINUTE));
-        }
+        Optional<Date> defaultStartTimeOpt = Optional.ofNullable(timeFormat.parse(divingLog.getTimeStart()));
+        defaultStartTimeOpt.ifPresent(cal::setTime);  //TODO ifPresentOrElse
+        timeStart.setHour(cal.get(Calendar.HOUR_OF_DAY));
+        timeStart.setMinute(cal.get(Calendar.MINUTE));
 
-        Date defaultEndTime = timeFormat.parse(divingLog.getTimeEnd());
-        if (null != defaultEndTime) {
-            cal.setTime(defaultEndTime);
-            timeEnd.setHour(cal.get(Calendar.HOUR_OF_DAY));
-            timeEnd.setMinute(cal.get(Calendar.MINUTE));
-        }
+        Optional<Date> defaultEndTimeOpt = Optional.ofNullable(timeFormat.parse(divingLog.getTimeEnd()));
+        defaultEndTimeOpt.ifPresent(cal::setTime);  //TODO ifPresentOrElse
+        timeEnd.setHour(cal.get(Calendar.HOUR_OF_DAY));
+        timeEnd.setMinute(cal.get(Calendar.MINUTE));
 
         try {
             String pictureUri = divingLog.getPictureUri();

@@ -67,7 +67,7 @@ public class DeleteAsyncTask extends AsyncTask<DivingLog, Integer, Boolean> {
         Log.d(TAG, "doInBackground()");
 
         // 失敗
-        if (divingLogs[0] == null) {
+        if (null == divingLogs[0]) {
             return false;
         }
 

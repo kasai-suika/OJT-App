@@ -27,6 +27,7 @@ import com.ojtapp.divinglog.view.dialog.DialogFragment;
 import com.ojtapp.divinglog.view.main.MainActivity;
 
 import java.io.IOException;
+import java.util.Optional;
 
 public class LogDetailFragment extends Fragment {
     /**
@@ -75,7 +76,7 @@ public class LogDetailFragment extends Fragment {
         super.onViewCreated(view, savedInstanceStat);
 
         Bundle args = getArguments();
-        if (null == args) {
+        if (null == args) {  //TODO ifPresentOrElse
             android.util.Log.e(TAG, "args = null");
             return;
         }
@@ -102,7 +103,7 @@ public class LogDetailFragment extends Fragment {
                 FragmentActivity fragmentActivity = getActivity();
                 assert fragmentActivity != null;
                 FragmentManager fragmentManager = fragmentActivity.getSupportFragmentManager();
-                assert divingLog != null;
+
                 DialogFragment deleteDialogFragment = DialogFragment.newInstance(
                         LogConstant.TITLE_DELETE_DIALOG,
                         LogConstant.MESSAGE_DELETE_DIALOG);
@@ -124,8 +125,8 @@ public class LogDetailFragment extends Fragment {
                                 Log.e(TAG, "正常に削除されませんでした");
                             }
                         });
-
-                        deleteAsyncTask.execute(divingLog);
+                        Optional<DivingLog> defaultStartTimeOpt = Optional.ofNullable(divingLog);
+                        defaultStartTimeOpt.ifPresent(deleteAsyncTask::execute);  //TODO ifPresentOrElse
                     }
 
                     @Override
@@ -155,7 +156,7 @@ public class LogDetailFragment extends Fragment {
         ImageView picture = view.findViewById(R.id.image_view_select_picture);
 
         // 値をセット
-        if (divingLog != null) {
+        if (null != divingLog) {
             diveNumber.setText(String.valueOf(divingLog.getDivingNumber()));
             place.setText(divingLog.getPlace());
             point.setText(divingLog.getPoint());

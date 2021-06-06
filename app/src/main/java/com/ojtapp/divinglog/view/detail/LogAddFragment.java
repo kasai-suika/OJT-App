@@ -147,7 +147,7 @@ public class LogAddFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
         if (requestCode == MainActivity.RESULT_PICK_IMAGEFILE && resultCode == Activity.RESULT_OK) {
-            if (resultData != null) {
+            if (null != resultData) {
                 uri = resultData.getData();
 
                 // URIの権限を保持する

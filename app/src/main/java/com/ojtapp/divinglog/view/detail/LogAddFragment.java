@@ -23,7 +23,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.ojtapp.divinglog.LogConstant;
 import com.ojtapp.divinglog.R;
 import com.ojtapp.divinglog.appif.DivingLog;
-import com.ojtapp.divinglog.controller.RegisterAsyncTask;
+import com.ojtapp.divinglog.util.ControlDBUtil;
 import com.ojtapp.divinglog.util.ConversionUtil;
 import com.ojtapp.divinglog.view.main.MainActivity;
 
@@ -112,34 +112,12 @@ public class LogAddFragment extends Fragment {
             public void onClick(View v) {
                 Log.d(TAG, "onClick");
 
-                //---------DivingLogクラスにセット------------
+                //DivingLogクラスに入力されたデータをセット
                 DivingLog divingLog = new DivingLog();
-                // データをDivingLogクラスにセット
                 setDataToDivingLog(divingLog);
 
-                // -----【DB】保存処理--------------
-                RegisterAsyncTask registerAsyncTask = new RegisterAsyncTask(requireContext());
-
-                // コールバック処理を設定
-                registerAsyncTask.setOnCallBack(new RegisterAsyncTask.RegisterCallback() {
-                    @Override
-                    public void onSuccess() {
-                        // --------最初の画面へ戻る処理------
-                        // 情報をintentに詰める
-                        Intent intent = new Intent(getContext(), MainActivity.class);
-                        // 指定したアクティビティより上のViewを削除
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                    }
-
-                    @Override
-                    public void onFailure() {
-                        Log.e(TAG, "正常にデータを保存できませんでした");
-                    }
-                });
-
-                // 保存処理開始
-                registerAsyncTask.execute(divingLog);
+                //DBに入力されたデータをセット
+                ControlDBUtil.setNewDataToDB(divingLog, getContext());
             }
         });
     }

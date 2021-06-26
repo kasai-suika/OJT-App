@@ -31,7 +31,7 @@ public class DeleteAsyncTask extends AsyncTask<DivingLog, Integer, Boolean> {
     @NonNull
     private final WeakReference<Context> weakReference;
     /**
-     * 削除処理実行Activity
+     * 削除処理実行Activity //TODO:リント警告解消→https://akira-watson.com/android/asynctask.html
      */
     private final FragmentActivity fragmentActivity;
     private ProgressDialogFragment progressDialogFragment = null;
@@ -55,7 +55,6 @@ public class DeleteAsyncTask extends AsyncTask<DivingLog, Integer, Boolean> {
         FragmentActivity fragmentActivity = this.fragmentActivity;
         assert fragmentActivity != null;
         FragmentManager fragmentManager = fragmentActivity.getSupportFragmentManager();
-
 
         // プログレスダイアログの生成
         this.progressDialogFragment = ProgressDialogFragment.newInstance("削除処理中");

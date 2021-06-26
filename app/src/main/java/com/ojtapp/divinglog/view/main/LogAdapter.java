@@ -24,7 +24,7 @@ public class LogAdapter extends ArrayAdapter<DivingLog> {
     /**
      * コンストラクタ
      */
-    LogAdapter(@NonNull Context context, int resource, List<DivingLog> items) {
+    public LogAdapter(@NonNull Context context, int resource, List<DivingLog> items) {
         super(context, resource, items);
         this.resource = resource;
         this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

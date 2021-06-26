@@ -26,8 +26,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.ojtapp.divinglog.LogConstant;
 import com.ojtapp.divinglog.R;
 import com.ojtapp.divinglog.appif.DivingLog;
-import com.ojtapp.divinglog.controller.DeleteAsyncTask;
-import com.ojtapp.divinglog.controller.UpdateAsyncTask;
+import com.ojtapp.divinglog.util.ControlDBUtil;
 import com.ojtapp.divinglog.util.ConversionUtil;
 import com.ojtapp.divinglog.view.dialog.DialogFragment;
 import com.ojtapp.divinglog.view.main.MainActivity;
@@ -115,7 +114,7 @@ public class LogEditFragment extends Fragment {
         linkVariable(view);
 
         // 初期データのセット
-        if (null != divingLog) {
+        if (null != divingLog) {    //TODO ifPresentOrElse
             try {
                 setDefaultDate(divingLog);
             } catch (ParseException e) {
@@ -140,28 +139,10 @@ public class LogEditFragment extends Fragment {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                assert divingLog != null;
+                assert divingLog != null; //TODO ifPresentOrElse
                 setDateToDivingLog(divingLog);
 
-
-                // -----【DB】更新処理--------------
-                UpdateAsyncTask updateAsyncTask = new UpdateAsyncTask(requireContext());
-                updateAsyncTask.setUpdateCallback(new UpdateAsyncTask.UpdateCallback() {
-                    @Override
-                    public void onSuccess() {
-                        // 情報をintentに詰める
-                        Intent intent = new Intent(getContext(), MainActivity.class);
-                        // 指定したアクティビティより上のViewを削除
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                    }
-
-                    @Override
-                    public void onFailure() {
-                        Log.e(TAG, "正常にデータを上書きできませんでした");
-                    }
-                });
-                updateAsyncTask.execute(divingLog);
+                ControlDBUtil.updateDataOfDB(divingLog, getContext());
             }
         });
 
@@ -172,33 +153,16 @@ public class LogEditFragment extends Fragment {
             public void onClick(View v) {
                 Log.d(TAG, "削除ボタン押下");
                 final FragmentActivity activity = getActivity();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 
-                if ((activity == null) || (divingLog == null)) {
-                    Log.e(TAG, "正常に削除されませんでした");
-                    return;
-                }
-                FragmentManager fragmentManager = activity.getSupportFragmentManager();
                 DialogFragment deleteDialogFragment = DialogFragment.newInstance(
                         LogConstant.TITLE_DELETE_DIALOG,
                         LogConstant.MESSAGE_DELETE_DIALOG);
+
                 deleteDialogFragment.setOnClickButtonListener(new DialogFragment.OnClickButtonListener() {
                     @Override
                     public void onClickPositiveButton() {
-                        DeleteAsyncTask deleteAsyncTask = new DeleteAsyncTask(requireContext(), activity);
-                        deleteAsyncTask.setDeleteCallback(new DeleteAsyncTask.DeleteCallback() {
-                            @Override
-                            public void onSuccess() {
-                                Intent intent = new Intent(requireContext(), MainActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                startActivity(intent);
-                            }
-
-                            @Override
-                            public void onFailure() {
-                                Log.e(TAG, "正常に削除されませんでした");
-                            }
-                        });
-                        deleteAsyncTask.execute(divingLog);
+                        ControlDBUtil.deleteDataOfDB(divingLog, getContext(), activity);
                     }
 
                     @Override

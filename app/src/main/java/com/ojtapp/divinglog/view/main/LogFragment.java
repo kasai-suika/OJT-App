@@ -1,6 +1,5 @@
 package com.ojtapp.divinglog.view.main;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,7 +15,7 @@ import androidx.fragment.app.Fragment;
 import com.ojtapp.divinglog.R;
 import com.ojtapp.divinglog.SortMenu;
 import com.ojtapp.divinglog.appif.DivingLog;
-import com.ojtapp.divinglog.controller.DisplayAsyncTask;
+import com.ojtapp.divinglog.util.ControlDBUtil;
 import com.ojtapp.divinglog.util.SharedPreferencesUtil;
 
 import java.util.List;
@@ -26,11 +25,10 @@ import java.util.List;
  */
 public class LogFragment extends Fragment {
     private static final String TAG = LogFragment.class.getSimpleName();
-    private ListView listView;
-    private LogAdapter logAdapter;
     private OnListItemListener callback;
+    private ListView listView;
 
-    LogFragment() {
+    public LogFragment() {
     }
 
     /**
@@ -78,32 +76,17 @@ public class LogFragment extends Fragment {
 
     public void refreshView() {
         Log.d(TAG, "refreshView()");
-        final Context context = requireContext();
-        //-------【DB】データ取得処理-------------
-        DisplayAsyncTask displayAsyncTask = new DisplayAsyncTask(context);
+        List<DivingLog> logList = ControlDBUtil.getDataListFromDB(getContext());
 
-        // コールバック処理
-        displayAsyncTask.setOnCallBack(new DisplayAsyncTask.DisplayCallback() {
-            @Override
-            public void onSuccess(List<DivingLog> logList) {
-                Log.d(TAG, "onDisplay");
-                // 記憶されたソートモードを取得
-                int memorySortMode = SharedPreferencesUtil.getSortMode(SharedPreferencesUtil.KEY_SORT_MODE, MainActivity.sharedPreferences);
-                SortMenu.sortDivingLog(logList, memorySortMode);
+        if (null != logList) {
+            // 記憶されたソートモードを取得
+            int memorySortMode = SharedPreferencesUtil.getSortMode(SharedPreferencesUtil.KEY_SORT_MODE, MainActivity.sharedPreferences);
+            SortMenu.sortDivingLog(logList, memorySortMode);
 
-                // Adapterの設定
-                LogFragment.this.logAdapter = new LogAdapter(context, R.layout.list_log_item, logList);
-                listView.setAdapter(logAdapter);
-            }
-
-            @Override
-            public void onFailure() {
-                Log.e(TAG, "正常にデータを読み込みませんでした");
-            }
-        });
-
-        // 非同期処理のメソッドに移動
-        displayAsyncTask.execute(0);
+            // Adapterの設定
+            LogAdapter logAdapter = new LogAdapter(getContext(), R.layout.list_log_item, logList);
+            listView.setAdapter(logAdapter);
+        }
     }
 
     public void setOnListItemListener(OnListItemListener callback) {

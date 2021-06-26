@@ -1,6 +1,5 @@
 package com.ojtapp.divinglog.view.detail;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,13 +20,11 @@ import androidx.fragment.app.FragmentManager;
 import com.ojtapp.divinglog.LogConstant;
 import com.ojtapp.divinglog.R;
 import com.ojtapp.divinglog.appif.DivingLog;
-import com.ojtapp.divinglog.controller.DeleteAsyncTask;
+import com.ojtapp.divinglog.util.ControlDBUtil;
 import com.ojtapp.divinglog.util.ConversionUtil;
 import com.ojtapp.divinglog.view.dialog.DialogFragment;
-import com.ojtapp.divinglog.view.main.MainActivity;
 
 import java.io.IOException;
-import java.util.Optional;
 
 public class LogDetailFragment extends Fragment {
     /**
@@ -100,9 +97,9 @@ public class LogDetailFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "削除ボタン押下");
-                FragmentActivity fragmentActivity = getActivity();
-                assert fragmentActivity != null;
-                FragmentManager fragmentManager = fragmentActivity.getSupportFragmentManager();
+                FragmentActivity activity = getActivity();
+                assert activity != null;
+                FragmentManager fragmentManager = activity.getSupportFragmentManager();
 
                 DialogFragment deleteDialogFragment = DialogFragment.newInstance(
                         LogConstant.TITLE_DELETE_DIALOG,
@@ -110,23 +107,7 @@ public class LogDetailFragment extends Fragment {
                 deleteDialogFragment.setOnClickButtonListener(new DialogFragment.OnClickButtonListener() {
                     @Override
                     public void onClickPositiveButton() {
-                        DeleteAsyncTask deleteAsyncTask = new DeleteAsyncTask(requireContext(), getActivity());
-
-                        deleteAsyncTask.setDeleteCallback(new DeleteAsyncTask.DeleteCallback() {
-                            @Override
-                            public void onSuccess() {
-                                Intent intent = new Intent(requireContext(), MainActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                startActivity(intent);
-                            }
-
-                            @Override
-                            public void onFailure() {
-                                Log.e(TAG, "正常に削除されませんでした");
-                            }
-                        });
-                        Optional<DivingLog> defaultStartTimeOpt = Optional.ofNullable(divingLog);
-                        defaultStartTimeOpt.ifPresent(deleteAsyncTask::execute);  //TODO ifPresentOrElse
+                        ControlDBUtil.deleteDataOfDB(divingLog, getContext(), activity);
                     }
 
                     @Override

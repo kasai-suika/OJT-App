@@ -3,6 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+        <variable name="main" type="com.ojtapp.divinglog.databinding.LogDateBinding" />
+        <variable name="handlers" type="com.ojtapp.divinglog.databinding.LogDateBinding.EventHandlers" />
+    </data>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -36,7 +41,8 @@
                         android:layout_marginStart="34dp"
                         android:autofillHints="@string/hint"
                         android:inputType="number"
-                        tools:ignore="LabelFor" />
+                        tools:ignore="LabelFor"
+                        android:text="@{main.diveNumber}"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -72,7 +78,8 @@
                         android:layout_marginStart="34dp"
                         android:autofillHints="@string/hint"
                         android:inputType="text"
-                        tools:ignore="LabelFor" />
+                        tools:ignore="LabelFor"
+                        android:text="@{main.place}"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -93,7 +100,8 @@
                         android:layout_height="wrap_content"
                         android:autofillHints="@string/hint"
                         android:inputType="text"
-                        tools:ignore="LabelFor" />
+                        tools:ignore="LabelFor"
+                        android:text="@{main.point}"/>
                 </LinearLayout>
 
                 <TextView
@@ -107,7 +115,7 @@
                     android:id="@+id/add_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="30dp" />
+                    android:layout_marginStart="30dp"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -187,7 +195,8 @@
                         android:layout_height="wrap_content"
                         android:autofillHints="@string/hint"
                         android:inputType="number"
-                        tools:ignore="LabelFor" />
+                        tools:ignore="LabelFor"
+                        android:text="@{main.depthMax}"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -202,7 +211,8 @@
                         android:layout_height="wrap_content"
                         android:autofillHints="@string/hint"
                         android:inputType="number"
-                        tools:ignore="LabelFor" />
+                        tools:ignore="LabelFor"
+                        android:text="@{main.depthAve}"/>
                 </LinearLayout>
 
                 <TextView
@@ -230,7 +240,8 @@
                         android:layout_height="wrap_content"
                         android:autofillHints="@string/hint"
                         android:inputType="number"
-                        tools:ignore="LabelFor" />
+                        tools:ignore="LabelFor"
+                        android:text="@{main.airStart}"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -245,7 +256,8 @@
                         android:layout_height="wrap_content"
                         android:autofillHints="@string/hint"
                         android:inputType="number"
-                        tools:ignore="LabelFor" />
+                        tools:ignore="LabelFor"
+                        android:text="@{main.airEnd}"/>
                 </LinearLayout>
 
                 <TextView
@@ -273,7 +285,8 @@
                         android:layout_height="wrap_content"
                         android:autofillHints="@string/hint"
                         android:inputType="text"
-                        tools:ignore="LabelFor" />
+                        tools:ignore="LabelFor"
+                        android:text="@{main.weather}"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -288,7 +301,8 @@
                         android:layout_height="wrap_content"
                         android:autofillHints="@string/hint"
                         android:inputType="number"
-                        tools:ignore="LabelFor" />
+                        tools:ignore="LabelFor"
+                        android:text="@{main.temp}"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -309,7 +323,8 @@
                         android:layout_height="wrap_content"
                         android:autofillHints="@string/hint"
                         android:inputType="number"
-                        tools:ignore="LabelFor" />
+                        tools:ignore="LabelFor"
+                        android:text="@{main.tempWater}"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -324,7 +339,8 @@
                         android:layout_height="wrap_content"
                         android:autofillHints="@string/hint"
                         android:inputType="number"
-                        tools:ignore="LabelFor" />
+                        tools:ignore="LabelFor"
+                        android:text="@{main.visibility}"/>
                 </LinearLayout>
 
                 <TextView
@@ -353,7 +369,8 @@
                         android:layout_marginStart="34dp"
                         android:autofillHints="@string/hint"
                         android:inputType="text"
-                        tools:ignore="LabelFor" />
+                        tools:ignore="LabelFor"
+                        android:text="@{main.memberNavigate}"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -374,7 +391,8 @@
                         android:layout_height="wrap_content"
                         android:autofillHints="@string/hint"
                         android:inputType="text"
-                        tools:ignore="LabelFor" />
+                        tools:ignore="LabelFor"
+                        android:text="@{main.member}"/>
                 </LinearLayout>
 
                 <TextView
@@ -391,7 +409,8 @@
                     android:layout_marginStart="15dp"
                     android:autofillHints="@string/hint"
                     android:inputType="text"
-                    tools:ignore="LabelFor" />
+                    tools:ignore="LabelFor"
+                    android:text="@{main.memo}"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -418,7 +437,8 @@
                     android:layout_marginTop="7dp"
                     android:adjustViewBounds="true"
                     android:contentDescription="@string/content_description_display_picture"
-                    android:scaleType="fitStart" />
+                    android:scaleType="fitStart"
+                    android:background="@{main.picture}"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -433,7 +453,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="20dp"
-                    android:text="@string/button_make_task" />
+                    android:text="@string/button_make_task"
+                    android:onClick="@{handlers.onMakeClick}"/>
             </LinearLayout>
         </ScrollView>
     </LinearLayout>

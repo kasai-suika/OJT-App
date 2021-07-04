@@ -17,15 +17,18 @@ import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.ojtapp.divinglog.LogConstant;
 import com.ojtapp.divinglog.R;
 import com.ojtapp.divinglog.appif.DivingLog;
+import com.ojtapp.divinglog.databinding.FragmentAddLogBinding;
 import com.ojtapp.divinglog.util.ControlDBUtil;
 import com.ojtapp.divinglog.util.ConversionUtil;
 import com.ojtapp.divinglog.view.main.MainActivity;
+import com.ojtapp.divinglog.viewModel.MainViewModel;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -58,6 +61,8 @@ public class LogAddFragment extends Fragment {
     private ImageView picture;
     private Uri uri = null;
 
+    private MainViewModel viewModel = new MainViewModel();
+
     /**
      * デフォルトコンストラクタ
      */
@@ -83,7 +88,11 @@ public class LogAddFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceStat) {
         android.util.Log.d(TAG, "onCreateView");
-        return inflater.inflate(R.layout.fragment_add_log, container, false);
+        FragmentAddLogBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_add_log, container, false);
+        binding.set
+
+        return binding.getRoot();
+//        return inflater.inflate(R.layout.fragment_add_log, container, false);
     }
 
     @Override
@@ -114,10 +123,10 @@ public class LogAddFragment extends Fragment {
 
                 //DivingLogクラスに入力されたデータをセット
                 DivingLog divingLog = new DivingLog();
-                setDataToDivingLog(divingLog);
+//                setDataToDivingLog(divingLog);
 
                 //DBに入力されたデータをセット
-                ControlDBUtil.setNewDataToDB(divingLog, getContext());
+//                ControlDBUtil.setNewDataToDB(divingLog, getContext());
             }
         });
     }
@@ -175,42 +184,43 @@ public class LogAddFragment extends Fragment {
      * @param divingLog 　セットするDivingLogクラス
      */
     private void setDataToDivingLog(@NonNull DivingLog divingLog) {
-        // 本数
-        divingLog.setDiveNumber(Integer.parseInt(diveNumber.getText().toString()));
-
-        // 場所
-        divingLog.setPlace(place.getText().toString());
-
-        // ポイント
-        divingLog.setPoint(point.getText().toString());
-
-        // 深度（最大）
-        divingLog.setDepthMax(ConversionUtil.getIntFromStr(depthMax.getText().toString()));
-
-        // 深度（平均）
-        divingLog.setDepthAve(ConversionUtil.getIntFromStr(depthAve.getText().toString()));
-
-        // 残圧（開始時）
-        int airStartInt = ConversionUtil.getIntFromStr(airStart.getText().toString());
-        divingLog.setAirStart(airStartInt);
-
-        // 残圧（終了時）
-        int airEndInt = ConversionUtil.getIntFromStr(airEnd.getText().toString());
-        divingLog.setAirEnd(airEndInt);
-
-        // 使用した空気
-        if ((ConversionUtil.NO_DATA == airStartInt) || (ConversionUtil.NO_DATA == airEndInt)) {
-            divingLog.setAirDive(ConversionUtil.NO_DATA);
-        } else {
-            int airDive = airStartInt - airEndInt;
-            divingLog.setAirDive(airDive);
-        }
-
-        // 天気
-        divingLog.setWeather(weather.getText().toString());
-
-        // 気温
-        divingLog.setTemp(ConversionUtil.getIntFromStr(temp.getText().toString()));
+//
+//        // 本数
+//        divingLog.setDiveNumber(Integer.parseInt(diveNumber.getText().toString()));
+//
+//        // 場所
+//        divingLog.setPlace(place.getText().toString());
+//
+//        // ポイント
+//        divingLog.setPoint(point.getText().toString());
+//
+//        // 深度（最大）
+//        divingLog.setDepthMax(ConversionUtil.getIntFromStr(depthMax.getText().toString()));
+//
+//        // 深度（平均）
+//        divingLog.setDepthAve(ConversionUtil.getIntFromStr(depthAve.getText().toString()));
+//
+//        // 残圧（開始時）
+//        int airStartInt = ConversionUtil.getIntFromStr(airStart.getText().toString());
+//        divingLog.setAirStart(airStartInt);
+//
+//        // 残圧（終了時）
+//        int airEndInt = ConversionUtil.getIntFromStr(airEnd.getText().toString());
+//        divingLog.setAirEnd(airEndInt);
+//
+//        // 使用した空気
+//        if ((ConversionUtil.NO_DATA == airStartInt) || (ConversionUtil.NO_DATA == airEndInt)) {
+//            divingLog.setAirDive(ConversionUtil.NO_DATA);
+//        } else {
+//            int airDive = airStartInt - airEndInt;
+//            divingLog.setAirDive(airDive);
+//        }
+//
+//        // 天気
+//        divingLog.setWeather(weather.getText().toString());
+//
+//        // 気温
+//        divingLog.setTemp(ConversionUtil.getIntFromStr(temp.getText().toString()));
 
         // 水温
         divingLog.setTempWater(ConversionUtil.getIntFromStr(tempWater.getText().toString()));

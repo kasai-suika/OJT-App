@@ -76,17 +76,19 @@ public class LogFragment extends Fragment {
 
     public void refreshView() {
         Log.d(TAG, "refreshView()");
-        List<DivingLog> logList = ControlDBUtil.getDataListFromDB(getContext());
+        ControlDBUtil.getDataListFromDB(getContext(), listView);
 
-        if (null != logList) {
-            // 記憶されたソートモードを取得
-            int memorySortMode = SharedPreferencesUtil.getSortMode(SharedPreferencesUtil.KEY_SORT_MODE, MainActivity.sharedPreferences);
-            SortMenu.sortDivingLog(logList, memorySortMode);
+//        List<DivingLog> logList = ControlDBUtil.getDataListFromDB(getContext());
 
-            // Adapterの設定
-            LogAdapter logAdapter = new LogAdapter(getContext(), R.layout.list_log_item, logList);
-            listView.setAdapter(logAdapter);
-        }
+//        if (null != logList) {
+//            // 記憶されたソートモードを取得
+//            int memorySortMode = SharedPreferencesUtil.getSortMode(SharedPreferencesUtil.KEY_SORT_MODE, MainActivity.sharedPreferences);
+//            SortMenu.sortDivingLog(logList, memorySortMode);
+//
+//            // Adapterの設定
+//            LogAdapter logAdapter = new LogAdapter(getContext(), R.layout.list_log_item, logList);
+//            listView.setAdapter(logAdapter);
+//        }
     }
 
     public void setOnListItemListener(OnListItemListener callback) {

@@ -3,16 +3,20 @@ package com.ojtapp.divinglog.util;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 
+import com.ojtapp.divinglog.R;
+import com.ojtapp.divinglog.SortMenu;
 import com.ojtapp.divinglog.appif.DivingLog;
 import com.ojtapp.divinglog.controller.DeleteAsyncTask;
 import com.ojtapp.divinglog.controller.DisplayAsyncTask;
 import com.ojtapp.divinglog.controller.RegisterAsyncTask;
 import com.ojtapp.divinglog.controller.UpdateAsyncTask;
+import com.ojtapp.divinglog.view.main.LogAdapter;
 import com.ojtapp.divinglog.view.main.MainActivity;
 
 import java.util.ArrayList;
@@ -93,33 +97,59 @@ public class ControlDBUtil {
         deleteAsyncTask.execute(divingLog);
     }
 
-    @Nullable
-    public static List<DivingLog> getDataListFromDB(@NonNull Context context) {
+    public static void getDataListFromDB(@NonNull Context context, ListView listView) {
         DisplayAsyncTask displayAsyncTask = new DisplayAsyncTask(context);
-        final List<List<DivingLog>> logLists = new ArrayList<>();
 
         // コールバック処理
         displayAsyncTask.setOnCallBack(new DisplayAsyncTask.DisplayCallback() {
             @Override
             public void onSuccess(List<DivingLog> logList) {
                 Log.d(TAG, "データ取得に成功しました");
-                logLists.set(0, logList);
+                int memorySortMode = SharedPreferencesUtil.getSortMode(SharedPreferencesUtil.KEY_SORT_MODE, MainActivity.sharedPreferences);
+                SortMenu.sortDivingLog(logList, memorySortMode);
+
+                // Adapterの設定
+                LogAdapter logAdapter = new LogAdapter(context, R.layout.list_log_item, logList);
+                listView.setAdapter(logAdapter);
             }
 
             @Override
             public void onFailure() {
                 Log.e(TAG, "データ取得に失敗しました");
-                logLists.set(0, null);
             }
         });
 
         // 非同期処理のメソッドに移動
         displayAsyncTask.execute(0);
-
-        while (0 == logLists.size()) {
-            Log.d(TAG, "データ取得処理中です " + logLists.size());
-        }
-
-        return logLists.get(0);
     }
+
+//    @Nullable
+//    public static List<DivingLog> getDataListFromDB(@NonNull Context context) {
+//        DisplayAsyncTask displayAsyncTask = new DisplayAsyncTask(context);
+//        final List<List<DivingLog>> logLists = new ArrayList<>();
+//
+//        // コールバック処理
+//        displayAsyncTask.setOnCallBack(new DisplayAsyncTask.DisplayCallback() {
+//            @Override
+//            public void onSuccess(List<DivingLog> logList) {
+//                Log.d(TAG, "データ取得に成功しました");
+//                logLists.set(0, logList);
+//            }
+//
+//            @Override
+//            public void onFailure() {
+//                Log.e(TAG, "データ取得に失敗しました");
+//                logLists.set(0, null);
+//            }
+//        });
+//
+//        // 非同期処理のメソッドに移動
+//        displayAsyncTask.execute(0);
+//
+//        while (0 == logLists.size()) {
+//            Log.d(TAG, "データ取得処理中です " + logLists.size());
+//        }
+//
+//        return logLists.get(0);
+//    }
 }

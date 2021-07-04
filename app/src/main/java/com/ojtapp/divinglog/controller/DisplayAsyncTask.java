@@ -16,13 +16,16 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Log情報をDBから取得するクラス
+ */
 public class DisplayAsyncTask extends AsyncTask<Integer, Integer, List<DivingLog>> {
     /**
      * クラス名
      */
     private static final String TAG = DisplayAsyncTask.class.getSimpleName();
     /**
-     * コンテクスト受け取り用
+     * Context受け取り用
      */
     @NonNull
     private final WeakReference<Context> weakReference;
@@ -82,7 +85,8 @@ public class DisplayAsyncTask extends AsyncTask<Integer, Integer, List<DivingLog
                 LogConstant.VISIBILITY,
                 LogConstant.MEMBER,
                 LogConstant.MEMBER_NAVIGATE,
-                LogConstant.MEMO
+                LogConstant.MEMO,
+                LogConstant.PICTURE
         };
 
         Cursor cursor = db.query(
@@ -101,6 +105,11 @@ public class DisplayAsyncTask extends AsyncTask<Integer, Integer, List<DivingLog
             logList.add(log);
         }
         cursor.close();
+
+        // 失敗
+        if (0 == logList.size()) {
+            return null;
+        }
         return logList;
     }
 
@@ -193,6 +202,10 @@ public class DisplayAsyncTask extends AsyncTask<Integer, Integer, List<DivingLog
         String memo = cursor.getString(
                 cursor.getColumnIndexOrThrow(LogConstant.MEMO));
         log.setMemo(memo);
+        // 写真
+        String pictureUri = cursor.getString(
+                cursor.getColumnIndexOrThrow(LogConstant.PICTURE));
+        log.setPictureUri(pictureUri);
 
         return log;
     }
@@ -210,7 +223,11 @@ public class DisplayAsyncTask extends AsyncTask<Integer, Integer, List<DivingLog
     protected void onPostExecute(List<DivingLog> logList) {
         super.onPostExecute(logList);
         if (null != displayCallback) {
-            displayCallback.onDisplay(logList);
+            if (null != logList) {
+                displayCallback.onSuccess(logList);
+            } else {
+                displayCallback.onFailure();
+            }
         }
     }
 
@@ -227,6 +244,8 @@ public class DisplayAsyncTask extends AsyncTask<Integer, Integer, List<DivingLog
      * コールバック用インターフェイス
      */
     public interface DisplayCallback {
-        void onDisplay(List<DivingLog> logList);
+        void onSuccess(List<DivingLog> logList);
+
+        void onFailure();
     }
 }

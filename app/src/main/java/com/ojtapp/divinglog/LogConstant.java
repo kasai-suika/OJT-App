@@ -19,7 +19,24 @@ public class LogConstant {
     public static final String TEMP = "tempAir";
     public static final String TEMP_WATER = "tempWater";
     public static final String VISIBILITY = "visibility";
-    public static final String MEMBER_NAVIGATE= "member_navigate";
+    public static final String MEMBER_NAVIGATE = "member_navigate";
     public static final String MEMBER = "member";
     public static final String MEMO = "memo";
+    public static final String PICTURE = "picture";
+    /**
+     * 日付フォーマット
+     */
+    public static final String FORMAT_DATE = "yyyy/MM/dd";
+    /**
+     * 時間フォーマット
+     */
+    public static final String FORMAT_TIME = "HH:mm";
+    /**
+     * 削除確認ダイアログのタイトル
+     */
+    public static final String TITLE_DELETE_DIALOG = "削除確認";
+    /**
+     * 削除確認ダイアログのメッセージ
+     */
+    public static final String MESSAGE_DELETE_DIALOG = "削除してもよろしいですか？";
 }

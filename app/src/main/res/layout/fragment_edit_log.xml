@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -27,7 +28,7 @@
                 android:orientation="horizontal">
 
                 <EditText
-                    android:id="@+id/add_dive_number"
+                    android:id="@+id/edit_dive_number"
                     android:layout_width="50dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="34dp"
@@ -63,7 +64,7 @@
                     android:textSize="17sp" />
 
                 <EditText
-                    android:id="@+id/add_place"
+                    android:id="@+id/edit_place"
                     android:layout_width="250dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="34dp"
@@ -85,7 +86,7 @@
                     android:textSize="17sp" />
 
                 <EditText
-                    android:id="@+id/add_point"
+                    android:id="@+id/edit_point"
                     android:layout_width="250dp"
                     android:layout_height="wrap_content"
                     android:autofillHints="@string/hint"
@@ -101,7 +102,7 @@
                 android:textSize="20sp" />
 
             <DatePicker
-                android:id="@+id/add_date"
+                android:id="@+id/edit_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp" />
@@ -127,7 +128,7 @@
                     android:textSize="17sp" />
 
                 <TimePicker
-                    android:id="@+id/add_time_start"
+                    android:id="@+id/edit_time_start"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="30dp"
@@ -150,7 +151,7 @@
                     android:textSize="17sp" />
 
                 <TimePicker
-                    android:id="@+id/add_time_end"
+                    android:id="@+id/edit_time_end"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="30dp"
@@ -179,7 +180,7 @@
                     android:textSize="17sp" />
 
                 <EditText
-                    android:id="@+id/add_depth_max"
+                    android:id="@+id/edit_depth_max"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:autofillHints="@string/hint"
@@ -194,7 +195,7 @@
                     android:textSize="17sp" />
 
                 <EditText
-                    android:id="@+id/add_depth_ave"
+                    android:id="@+id/edit_depth_ave"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:autofillHints="@string/hint"
@@ -222,7 +223,7 @@
                     android:textSize="17sp" />
 
                 <EditText
-                    android:id="@+id/add_air_start"
+                    android:id="@+id/edit_air_start"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:autofillHints="@string/hint"
@@ -237,7 +238,7 @@
                     android:textSize="17sp" />
 
                 <EditText
-                    android:id="@+id/add_air_end"
+                    android:id="@+id/edit_air_end"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:autofillHints="@string/hint"
@@ -265,7 +266,7 @@
                     android:textSize="17sp" />
 
                 <EditText
-                    android:id="@+id/add_weather"
+                    android:id="@+id/edit_weather"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:autofillHints="@string/hint"
@@ -280,7 +281,7 @@
                     android:textSize="17sp" />
 
                 <EditText
-                    android:id="@+id/add_temp"
+                    android:id="@+id/edit_temp"
                     android:layout_width="118dp"
                     android:layout_height="wrap_content"
                     android:autofillHints="@string/hint"
@@ -301,7 +302,7 @@
                     android:textSize="17sp" />
 
                 <EditText
-                    android:id="@+id/add_temp_water"
+                    android:id="@+id/edit_temp_water"
                     android:layout_width="123dp"
                     android:layout_height="wrap_content"
                     android:autofillHints="@string/hint"
@@ -316,7 +317,7 @@
                     android:textSize="17sp" />
 
                 <EditText
-                    android:id="@+id/add_visibility"
+                    android:id="@+id/edit_visibility"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:autofillHints="@string/hint"
@@ -344,7 +345,7 @@
                     android:textSize="17sp" />
 
                 <EditText
-                    android:id="@+id/add_navi"
+                    android:id="@+id/edit_navi"
                     android:layout_width="250dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="34dp"
@@ -366,7 +367,7 @@
                     android:textSize="17sp" />
 
                 <EditText
-                    android:id="@+id/add_member"
+                    android:id="@+id/edit_member"
                     android:layout_width="250dp"
                     android:layout_height="wrap_content"
                     android:autofillHints="@string/hint"
@@ -382,7 +383,7 @@
                 android:textSize="20sp" />
 
             <EditText
-                android:id="@+id/add_memo"
+                android:id="@+id/edit_memo"
                 android:layout_width="370dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
@@ -397,13 +398,53 @@
                 android:text="@string/picture"
                 android:textSize="20sp" />
 
-            <Button
-                android:id="@+id/button_make_task"
-                android:layout_width="wrap_content"
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/button_add_picture"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="170dp"
+                android:layout_gravity="end"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:clickable="true"
+                android:contentDescription="@string/content_description_display_picture"
+                app:srcCompat="@android:drawable/ic_input_add" />
+
+            <ImageView
+                android:id="@+id/image_view_select_picture"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/content_description_display_picture"
+                android:scaleType="fitStart" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                android:background="@color/colorLightGrey"
+                android:textSize="20sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="@string/button_make_task" />
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/edit_button_update"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/update" />
+
+                <Button
+                    android:id="@+id/edit_button_delete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/delete" />
+
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

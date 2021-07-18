@@ -107,7 +107,7 @@ public class LogDetailFragment extends Fragment {
                 deleteDialogFragment.setOnClickButtonListener(new DialogFragment.OnClickButtonListener() {
                     @Override
                     public void onClickPositiveButton() {
-                        ControlDBUtil.deleteDataOfDB(divingLog, getContext(), activity);
+                        ControlDBUtil.deleteDataOfDB(divingLog, requireContext(), activity);
                     }
 
                     @Override

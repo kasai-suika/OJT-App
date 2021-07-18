@@ -29,11 +29,13 @@ public class DeleteAsyncTask extends AsyncTask<DivingLog, Integer, Boolean> {
      * Context受け取り用
      */
     @NonNull
-    private final WeakReference<Context> weakReference;
+    private final WeakReference<Context> contextWeakReference;
     /**
-     * 削除処理実行Activity //TODO:リント警告解消→https://akira-watson.com/android/asynctask.html
+     * Activity受け取り用
      */
-    private final FragmentActivity fragmentActivity;
+    @NonNull
+    private final WeakReference<FragmentActivity> activityWeakReference;
+
     private ProgressDialogFragment progressDialogFragment = null;
     /**
      * コールバック設定用
@@ -43,8 +45,8 @@ public class DeleteAsyncTask extends AsyncTask<DivingLog, Integer, Boolean> {
 
     public DeleteAsyncTask(@NonNull Context context, FragmentActivity activity) {
         super();
-        this.weakReference = new WeakReference<>(context);
-        this.fragmentActivity = activity;
+        this.contextWeakReference = new WeakReference<>(context);
+        this.activityWeakReference = new WeakReference<>(activity);
     }
 
     /**
@@ -52,7 +54,7 @@ public class DeleteAsyncTask extends AsyncTask<DivingLog, Integer, Boolean> {
      */
     @Override
     protected void onPreExecute() {
-        FragmentActivity fragmentActivity = this.fragmentActivity;
+        FragmentActivity fragmentActivity = activityWeakReference.get();
         assert fragmentActivity != null;
         FragmentManager fragmentManager = fragmentActivity.getSupportFragmentManager();
 
@@ -70,7 +72,7 @@ public class DeleteAsyncTask extends AsyncTask<DivingLog, Integer, Boolean> {
             return false;
         }
 
-        OpenHelper openHelper = new OpenHelper(weakReference.get());
+        OpenHelper openHelper = new OpenHelper(contextWeakReference.get());
         SQLiteDatabase db = openHelper.getWritableDatabase();
 
         String selection = LogConstant.LOG_ID + " = ?";

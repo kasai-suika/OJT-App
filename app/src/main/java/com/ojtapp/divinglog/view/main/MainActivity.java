@@ -100,18 +100,33 @@ public class MainActivity extends AppCompatActivity implements LogFragment.OnLis
         }
     }
 
+    /**
+     * リストアイテムが押下された場合、
+     * 詳細画面に移行する
+     * @param divingLog　押下されたリストアイテムが保持するデータをもつDivingLogクラス
+     */
     @Override
     public void onListItem(@NonNull DivingLog divingLog) {
         LogDetailFragment fragment = (LogDetailFragment) LogDetailFragment.newInstance(divingLog);
         getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
     }
 
+    /**
+     * 詳細画面で「更新ボタン」が押下された場合、
+     * 編集画面に移行する
+     * @param divingLog　更新対象のデータをもつDivingLogクラス
+     */
     @Override
     public void onDetailFragmentEditButton(@NonNull DivingLog divingLog) {
         LogEditFragment fragment = (LogEditFragment) LogEditFragment.newInstance(divingLog);
         getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
     }
 
+    /**
+     * リスト内の「更新ボタンが押下された場合、
+     * 編集画面に移行する
+     * @param view　押下されたリスト
+     */
     public void onListEditButton(@NonNull View view) {
         DivingLog divingLog = (DivingLog) view.getTag();
         LogEditFragment fragment = (LogEditFragment) LogEditFragment.newInstance(divingLog);

@@ -43,4 +43,5 @@
     <string name="content_description_display_picture">選択した写真を表示します</string>
     <string name="dialog_delete_progress_text">削除中です</string>
     <string name="text_progress">実行中です…</string>
+    <string name="diveNumber">本目</string>
 </resources>

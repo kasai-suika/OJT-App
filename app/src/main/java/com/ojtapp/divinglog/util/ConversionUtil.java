@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -44,8 +45,8 @@ public class ConversionUtil {
      * @param str 　String型のデータ
      * @return int型に変換したデータ
      */
-    public static int getIntFromStr(@NonNull String str) {
-        if (0 == str.length()) {
+    public static int getIntFromStr(@Nullable String str) {
+        if (null == str) {
             return NO_DATA;
         } else {
             return Integer.parseInt(str);
@@ -61,7 +62,7 @@ public class ConversionUtil {
      */
     public static String getStrFromInt(int intData) {
         if (ConversionUtil.NO_DATA == intData) {
-            return "";
+            return null;
         } else {
             return String.valueOf(intData);
         }

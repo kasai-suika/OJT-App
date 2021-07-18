@@ -18,7 +18,6 @@ import com.ojtapp.divinglog.appif.DivingLog;
 import com.ojtapp.divinglog.controller.DeleteAsyncTask;
 import com.ojtapp.divinglog.controller.RegisterAsyncTask;
 import com.ojtapp.divinglog.controller.UpdateAsyncTask;
-import com.ojtapp.divinglog.util.ControlDBUtil;
 import com.ojtapp.divinglog.util.ConversionUtil;
 import com.ojtapp.divinglog.view.dialog.DialogFragment;
 import com.ojtapp.divinglog.view.main.MainActivity;
@@ -47,6 +46,9 @@ public class MainViewModel extends ViewModel implements ClickHandlers {
     public String memberNavigate;
     public String member;
     public String memo;
+    public String strDate;
+    public String strTimeDive;
+    public String strAirDive;
     public Uri uri;
     public int year;
     public int month;
@@ -64,8 +66,9 @@ public class MainViewModel extends ViewModel implements ClickHandlers {
 
     /**
      * コンストラクタ
-     * @param context
-     * @param divingLog
+     *
+     * @param context   コンテキスト
+     * @param divingLog 　DivingLogクラス
      */
     public MainViewModel(@NonNull Context context, @Nullable DivingLog divingLog) {
         weakReference = new WeakReference<>(context);
@@ -77,6 +80,7 @@ public class MainViewModel extends ViewModel implements ClickHandlers {
 
     /**
      * {@inheritDoc}
+     *
      * @param view ボタン
      */
     @Override
@@ -105,6 +109,7 @@ public class MainViewModel extends ViewModel implements ClickHandlers {
 
     /**
      * {@inheritDoc}
+     *
      * @param view 　ボタン
      */
     @Override
@@ -146,6 +151,7 @@ public class MainViewModel extends ViewModel implements ClickHandlers {
 
     /**
      * {@inheritDoc}
+     *
      * @param view 　ボタン
      */
     @Override
@@ -193,9 +199,11 @@ public class MainViewModel extends ViewModel implements ClickHandlers {
         member = divingLog.getMember();
         memberNavigate = divingLog.getMemberNavigate();
         memo = divingLog.getMemo();
+        strDate = divingLog.getDate();
+        strTimeDive = divingLog.getTimeDive();
+        strAirDive = String.valueOf(divingLog.getAirDive());
 
         Calendar cal = Calendar.getInstance();
-
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat(LogConstant.FORMAT_DATE, Locale.JAPAN);
             Optional<Date> defaultDateOpt = Optional.ofNullable(dateFormat.parse(divingLog.getDate()));
@@ -240,7 +248,7 @@ public class MainViewModel extends ViewModel implements ClickHandlers {
      *
      * @param divingLog 　格納先のDivingLogクラス
      */
-    public void setDateToDivingLog(DivingLog divingLog) {
+    private void setDateToDivingLog(DivingLog divingLog) {
         divingLog.setDiveNumber(Integer.parseInt(diveNumber));
         divingLog.setPlace(place);
         divingLog.setPoint(point);
